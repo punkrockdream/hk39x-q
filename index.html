@@ -1,0 +1,3193 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>qv07</title>
+<style>
+:root{
+  --bg:#f6f1e7; --card:#fffdf8; --ink:#3b3530; --sub:#7a7066; --line:#e4dccd;
+  --btn:#efe7d8; --btn-on:#d9cbb2; --accent:#6f8f7f; --accent-ink:#fff; --soft:#f1ebe0;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink)}
+body{font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","BIZ UDPGothic","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  font-size:22px;line-height:1.7;-webkit-text-size-adjust:100%}
+#app{min-height:100%;display:flex;flex-direction:column;max-width:860px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:12px;min-height:44px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.iconbtn{border:0;background:var(--btn);color:var(--ink);border-radius:14px;min-width:56px;height:48px;font:inherit;font-size:18px;padding:0 14px;cursor:pointer}
+.main{flex:1;display:flex;flex-direction:column;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:32px 28px;box-shadow:0 2px 0 var(--line)}
+.blk{font-size:16px;color:var(--sub);margin-bottom:6px;letter-spacing:.05em}
+.pre{font-size:19px;color:var(--sub);background:var(--soft);border-radius:16px;padding:12px 16px;margin-bottom:16px}
+h1{font-size:30px;line-height:1.55;margin:0 0 24px;font-weight:700;letter-spacing:.02em}
+.hint{font-size:17px;color:var(--sub);margin:-12px 0 18px}
+.opts{display:grid;gap:14px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opts.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.opt{border:2px solid transparent;background:var(--btn);color:var(--ink);border-radius:22px;min-height:84px;padding:14px 18px;
+  font:inherit;font-size:24px;text-align:left;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .08s,background .15s}
+.opt:active{transform:scale(.98)}
+.opt.big{justify-content:center;text-align:center;font-size:30px;min-height:120px}
+.opt.on{background:var(--btn-on);border-color:var(--ink)}
+.opt .ic{font-size:32px;line-height:1;flex:none}
+.faces{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.face{border:2px solid transparent;background:var(--btn);border-radius:22px;padding:14px 4px;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.face .f{font-size:44px;line-height:1.1}
+.face .l{font-size:16px;line-height:1.35;text-align:center}
+.face.on{background:var(--btn-on);border-color:var(--ink)}
+.meter{display:flex;justify-content:space-between;font-size:15px;color:var(--sub);margin-top:6px;padding:0 6px}
+.go{margin-top:20px;width:100%;border:0;border-radius:22px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:26px;min-height:76px;cursor:pointer}
+.go[disabled]{opacity:.4}
+.foot{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.foot button{border:0;background:transparent;color:var(--sub);font:inherit;font-size:19px;padding:10px 18px;border-radius:14px;cursor:pointer;text-decoration:underline;text-underline-offset:5px}
+.foot .dk{background:var(--soft);text-decoration:none;color:var(--ink)}
+textarea{width:100%;min-height:180px;font:inherit;font-size:22px;border:2px solid var(--line);border-radius:18px;padding:14px;background:#fff;color:var(--ink)}
+.msg{text-align:center}
+.msg .big{font-size:64px;margin-bottom:8px}
+.msg p{font-size:26px;margin:0 0 8px}
+.lines{list-style:none;padding:0;margin:0 0 8px}
+.lines li{font-size:24px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.lines li:last-child{border-bottom:0;font-weight:700}
+.qr{display:flex;justify-content:center;margin:12px 0}
+.qr svg{width:min(78vw,520px);height:auto;background:#fff;border-radius:12px}
+.small{font-size:16px;color:var(--sub);line-height:1.6}
+.adult{font-family:system-ui,sans-serif}
+code{word-break:break-all;font-size:12px;display:block;background:var(--soft);padding:8px;border-radius:8px;max-height:90px;overflow:auto}
+@media (max-width:560px){h1{font-size:25px}.opts.two{grid-template-columns:1fr}.face .f{font-size:34px}.face .l{font-size:13px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+</script>
+<script>/* ===== 共通ロジック(娘さん用・親用の両方に埋め込む) ===== */
+var CORE = (function () {
+  'use strict';
+
+  // ---------- 選択肢・目盛り ----------
+  var YN = [{ v: 1, t: 'はい' }, { v: 0, t: 'いいえ' }];
+  // 「はい」のあとの強さ(5段階 → 0.2〜1.0)
+  var INT_FACES = ['😐', '🙁', '😟', '😣', '😫'];
+  var INT_LABELS = ['すこし', 'まあまあ', 'けっこう', 'かなり', 'すごく'];
+  var POS_FACES = ['🙂', '😊', '😄', '😆', '🤩'];
+  // 頻度(はいのあと) 1〜4 → 0.25〜1
+  var FREQ = [{ v: 1, t: 'たまに' }, { v: 2, t: 'ときどき' }, { v: 3, t: 'よく' }, { v: 4, t: 'ほぼ まいにち' }];
+  var SUBJ = [
+    { v: 'ja', t: 'こくご' }, { v: 'ma', t: 'すうがく' }, { v: 'en', t: 'えいご' }, { v: 'sc', t: 'りか' },
+    { v: 'so', t: 'しゃかい' }, { v: 'mu', t: 'おんがく' }, { v: 'ar', t: 'びじゅつ' }, { v: 'pe', t: 'たいいく' },
+    { v: 'th', t: 'ぎじゅつ・かてい' }
+  ];
+
+  // ---------- 判定の小道具 ----------
+  function has(a, id) { return a[id] !== undefined && a[id] !== null; }
+  function Y(a, id) { return has(a, id) && typeof a[id] === 'number' && a[id] >= 0.5; }
+  function N(a, id) { return has(a, id) && typeof a[id] === 'number' && a[id] < 0.5; }
+  function inc(a, id, v) {
+    if (!has(a, id)) return false;
+    var x = a[id];
+    if (Array.isArray(x)) return x.indexOf(v) >= 0;
+    return x === v;
+  }
+  function incAny(a, id, vs) { for (var i = 0; i < vs.length; i++) if (inc(a, id, vs[i])) return true; return false; }
+
+  // ---------- 質問 ----------
+  // t: 種類 yn / int(はいのあとの強さ) / pint(はいのあとの強さ・よいこと) / lvl(絶対的な度合い) / freq / one / multi / text
+  // q: 質問, e: かんたんな言いかえ, bad: ynで「はい」がしんどい側なら1, if: 表示する条件
+  var Q = [
+    // ---- A ----
+    { id: 'A0', b: 'A', t: 'yn', bad: 0, q: 'さいきん、たのしかった ことは あった?', e: 'さいきん、たのしい こと あった?' },
+    { id: 'A0a', b: 'A', t: 'pint', q: 'どのくらい たのしかった?', e: 'たのしさは どのくらい?', if: function (a) { return Y(a, 'A0'); } },
+    { id: 'A1', b: 'A', t: 'multi', q: 'いえで すきな ことは どれ?', e: 'いえで する のが すきな ことは?', o: [
+      { v: 'book', t: 'ほん', i: '📖' }, { v: 'phone', t: 'スマホ', i: '📱' }, { v: 'tv', t: 'テレビ・どうが', i: '📺' },
+      { v: 'game', t: 'ゲーム', i: '🎮' }, { v: 'sleep', t: 'ねる', i: '😴' }, { v: 'draw', t: 'え・ものづくり', i: '🎨' },
+      { v: 'other', t: 'ほか', i: '✨' }, { v: 'none', t: 'とくに ない', i: '・' }] },
+    { id: 'A2', b: 'A', t: 'lvl', q: 'さいきんの げんきは どのくらい?', e: 'いま げんきは ある?', good: 1,
+      faces: ['😩', '😕', '😐', '🙂', '😄'], labels: ['ぜんぜん ない', 'すこし', 'ふつう', 'まあまあ ある', 'とても ある'] },
+    { id: 'A3', b: 'A', t: 'yn', bad: 0, q: 'よるは よく ねむれてる?', e: 'よる、ちゃんと ねられる?' },
+    { id: 'A3a', b: 'A', t: 'freq', q: 'ねむれない よるは どのくらい ある?', e: 'ねられない ひは おおい?', if: function (a) { return N(a, 'A3'); } },
+
+    // ---- B ----
+    { id: 'B0', b: 'B', t: 'yn', bad: 0, q: 'あさは すっきり おきられる?', e: 'あさ、ぱっと おきられる?' },
+    { id: 'B1', b: 'B', t: 'yn', bad: 1, q: 'がっこうが ある ひの あさ、きもちが おもく なる ことは ある?', e: 'がっこうの ひの あさ、いやだなって おもう?' },
+    { id: 'B1a', b: 'B', t: 'int', q: 'どのくらい おもい?', e: 'いやな きもちは どのくらい?', if: function (a) { return Y(a, 'B1'); } },
+    { id: 'B2', b: 'B', t: 'one', q: 'いちばん おもく なるのは いつ?', e: 'いちばん いやなのは どの とき?', if: function (a) { return Y(a, 'B1'); }, o: [
+      { v: 'wake', t: 'おきる とき', i: '🛏️' }, { v: 'prep', t: 'じゅんびの とき', i: '👕' }, { v: 'leave', t: 'いえを でる とき', i: '🚪' },
+      { v: 'walk', t: 'みちを あるく とき', i: '🚶' }, { v: 'arrive', t: 'がっこうに つく とき', i: '🏫' },
+      { v: 'room', t: 'きょうしつに はいる とき', i: '🪑' }, { v: 'none', t: 'とくに きまって ない', i: '・' }] },
+    { id: 'B2a', b: 'B', t: 'multi', q: 'みちで いやなのは どれ?', e: 'あるいて いる とき、なにが いや?', if: function (a) { return inc(a, 'B2', 'walk'); }, o: [
+      { v: 'people', t: 'ひとに あう', i: '👥' }, { v: 'noise', t: 'くるまや おと', i: '🚗' }, { v: 'tired', t: 'つかれる', i: '💦' },
+      { v: 'think', t: 'かんがえごとを しちゃう', i: '💭' }, { v: 'alone', t: 'ひとりで あるく こと', i: '🧍' }, { v: 'other', t: 'ほか', i: '✨' }] },
+    { id: 'B3', b: 'B', t: 'yn', bad: 1, q: 'おかあさんが あさ いえに いる ひと いない ひで、がっこうへの いきやすさは ちがう?', e: 'おかあさんが あさ いると、がっこうに いきやすい?' },
+    { id: 'B3a', b: 'B', t: 'one', q: 'ちかいのは どれ?', e: 'いちばん にて いるのは?', if: function (a) { return Y(a, 'B3'); }, o: [
+      { v: 'can', t: 'いると いける きが する', i: '💪' }, { v: 'alone', t: 'ひとりの あさが いや', i: '🌫️' },
+      { v: 'nostop', t: 'とめる ひとが いないと やすんじゃう', i: '🛋️' }, { v: 'mom', t: 'おかあさんの ことが きに なる', i: '💭' },
+      { v: 'other', t: 'ほか', i: '✨' }] },
+    { id: 'B4', b: 'B', t: 'yn', bad: 1, q: 'がっこうを やすんだ ひ、いえに いるのは らく?', e: 'やすんだ ひは、いえで らくに すごせる?' },
+    { id: 'B4a', b: 'B', t: 'multi', q: 'やすんだ ひは なにを してる?', e: 'やすみの ひは なに してる?', if: function (a) { return Y(a, 'B4'); }, o: [
+      { v: 'phone', t: 'スマホ', i: '📱' }, { v: 'tv', t: 'テレビ・どうが', i: '📺' }, { v: 'book', t: 'ほん', i: '📖' },
+      { v: 'sleep', t: 'ねる', i: '😴' }, { v: 'study', t: 'べんきょう', i: '✏️' }, { v: 'nothing', t: 'なにも しない', i: '・' }] },
+    { id: 'B4b', b: 'B', t: 'int', q: 'やすんだ ひの いやな きもちは どのくらい?', e: 'やすんだ ひ、どのくらい いやな きもち?', if: function (a) { return N(a, 'B4'); } },
+
+    // ---- C ----
+    { id: 'C0', b: 'C', t: 'yn', bad: 0, q: 'がっこう、たのしい ときも ある?', e: 'がっこうで たのしい ことは ある?' },
+    { id: 'C0a', b: 'C', t: 'pint', q: 'どのくらい たのしい?', e: 'たのしさは どのくらい?', if: function (a) { return Y(a, 'C0'); } },
+    { id: 'C0b', b: 'C', t: 'multi', q: 'たのしいのは どこ?', e: 'どんな ときが たのしい?', if: function (a) { return Y(a, 'C0'); }, o: [
+      { v: 'friend', t: 'ともだち', i: '🧑‍🤝‍🧑' }, { v: 'club', t: 'ぶかつ', i: '🏸' }, { v: 'lunch', t: 'きゅうしょく', i: '🍱' },
+      { v: 'class', t: 'すきな じゅぎょう', i: '📘' }, { v: 'break', t: 'やすみじかん', i: '☕' }, { v: 'teacher', t: 'せんせい', i: '🧑‍🏫' },
+      { v: 'other', t: 'ほか', i: '✨' }] },
+    { id: 'C0c', b: 'C', t: 'yn', bad: 0, q: 'すきな きょうかや、とくいな きょうかは ある?', e: 'すきな じゅぎょうは ある?' },
+    { id: 'C0d', b: 'C', t: 'multi', q: 'どの きょうか?', e: 'すきな じゅぎょうは どれ?', if: function (a) { return Y(a, 'C0c'); }, o: SUBJ },
+    { id: 'C1', b: 'C', t: 'yn', bad: 1, q: 'がっこうで しんどい ことは ある?', e: 'がっこうで つらい ことは ある?' },
+    { id: 'C1a', b: 'C', t: 'multi', q: 'しんどいのは どれ?', e: 'つらいのは どれ?', if: function (a) { return Y(a, 'C1'); }, o: [
+      { v: 'class', t: 'じゅぎょう', i: '📘' }, { v: 'break', t: 'やすみじかん', i: '☕' }, { v: 'friend', t: 'ともだちの こと', i: '👥' },
+      { v: 'teacher', t: 'せんせい', i: '🧑‍🏫' }, { v: 'sense', t: 'おと・におい・ひとの おおさ', i: '🔊' }, { v: 'other', t: 'ほか', i: '✨' }] },
+    { id: 'C2', b: 'C', t: 'lvl', q: 'じゅぎょうの はなしは どのくらい わかる?', e: 'じゅぎょうは わかる?', good: 1,
+      if: function (a) { return inc(a, 'C1a', 'class'); },
+      faces: ['🌑', '🌘', '🌗', '🌖', '🌕'], labels: ['ぜんぜん わからない', 'すこし わかる', 'はんぶん くらい', 'だいたい わかる', 'ぜんぶ わかる'] },
+    { id: 'C3', b: 'C', t: 'multi', q: 'とくに わからない きょうかは?', e: 'むずかしい じゅぎょうは どれ?',
+      if: function (a) { return inc(a, 'C1a', 'class'); }, o: SUBJ.concat([{ v: 'all', t: 'ぜんぶ', i: '📚' }]) },
+    { id: 'C4', b: 'C', t: 'one', q: 'わからなく なったのは いつごろ から?', e: 'いつから むずかしく なった?',
+      if: function (a) { return inc(a, 'C1a', 'class'); }, o: [
+        { v: 'jh', t: 'ちゅうがく から', i: '🏫' }, { v: 'e56', t: 'しょうがっこう 5・6ねん', i: '5️⃣' },
+        { v: 'e34', t: 'しょうがっこう 3・4ねん', i: '3️⃣' }, { v: 'early', t: 'もっと まえ', i: '1️⃣' }, { v: 'forget', t: 'おぼえて ない', i: '❔' }] },
+    { id: 'C2b', b: 'C', t: 'yn', bad: 0, q: 'じゅぎょうで あてられるのは へいき?', e: 'せんせいに あてられても だいじょうぶ?', if: function (a) { return inc(a, 'C1a', 'class'); } },
+    { id: 'C2c', b: 'C', t: 'int', q: 'どのくらい いや?', e: 'いやな きもちは どのくらい?', if: function (a) { return N(a, 'C2b'); } },
+    { id: 'C5', b: 'C', t: 'yn', bad: 0, q: 'クラスで いっしょに いる こは いる?', e: 'クラスに なかよしの こは いる?',
+      if: function (a) { return incAny(a, 'C1a', ['break', 'friend']) || inc(a, 'B2', 'room'); } },
+    { id: 'C6', b: 'C', t: 'yn', bad: 1, q: 'がっこうで まわりに あわせて つかれる ことは ある?', e: 'みんなに あわせるのが つかれる?',
+      if: function (a) { return incAny(a, 'C1a', ['break', 'friend']) || inc(a, 'B2', 'room'); } },
+    { id: 'C6a', b: 'C', t: 'int', q: 'どのくらい つかれる?', e: 'つかれは どのくらい?', if: function (a) { return Y(a, 'C6'); } },
+    { id: 'C7', b: 'C', t: 'yn', bad: 1, q: 'にがてな せんせいは いる?', e: 'すきじゃない せんせいは いる?', if: function (a) { return inc(a, 'C1a', 'teacher'); } },
+    { id: 'C7a', b: 'C', t: 'int', q: 'どのくらい にがて?', e: 'にがての つよさは どのくらい?', if: function (a) { return Y(a, 'C7'); } },
+    { id: 'C8', b: 'C', t: 'int', q: 'おとや まぶしさ、ひとの おおさで、どのくらい つかれる?', e: 'うるさい ところで どのくらい つかれる?', if: function (a) { return inc(a, 'C1a', 'sense'); } },
+    { id: 'C9', b: 'C', t: 'yn', bad: 1, q: 'テストや せいせきの ことを かんがえると、きもちが おもく なる?', e: 'テストの ことを かんがえると いやな きもち?' },
+    { id: 'C9a', b: 'C', t: 'int', q: 'どのくらい おもい?', e: 'いやな きもちは どのくらい?', if: function (a) { return Y(a, 'C9'); } },
+
+    // ---- D ----
+    { id: 'D1', b: 'D', t: 'yn', bad: 0, q: 'ぶかつは すき?', e: 'ぶかつは たのしい?' },
+    { id: 'D1a', b: 'D', t: 'pint', q: 'どのくらい すき?', e: 'すきな きもちは どのくらい?', if: function (a) { return Y(a, 'D1'); } },
+    { id: 'D2', b: 'D', t: 'yn', bad: 1, q: 'じゅぎょうが なくて ぶかつ だけの ひの ほうが、がっこうに いきやすい?', e: 'ぶかつ だけの ひは、がっこうに いきやすい?' },
+
+    // ---- E ----
+    { id: 'E0', b: 'E', t: 'yn', bad: 0, q: 'たのしみに して いる ことは ある?', e: 'これから たのしみな ことは ある?' },
+    { id: 'E1', b: 'E', t: 'yn', bad: 1, q: 'きもちが しずむ ことは ある?', e: 'かなしい きもちに なる ことは ある?' },
+    { id: 'E1a', b: 'E', t: 'freq', q: 'どのくらい ある?', e: 'どのくらい よく ある?', if: function (a) { return Y(a, 'E1'); } },
+    { id: 'E2', b: 'E', t: 'yn', bad: 1, q: 'そわそわ したり、ふあんに なったり する ことは ある?', e: 'しんぱいで おちつかない ことは ある?' },
+    { id: 'E2a', b: 'E', t: 'freq', q: 'どのくらい ある?', e: 'どのくらい よく ある?', if: function (a) { return Y(a, 'E2'); } },
+    { id: 'E5', b: 'E', t: 'multi', q: 'よく ある からだの ちょうしは?', e: 'からだで よく いたい ところは?', o: [
+      { v: 'head', t: 'あたまが いたい', i: '🤕' }, { v: 'belly', t: 'おなかが いたい', i: '🫃' }, { v: 'tired', t: 'だるい', i: '🥱' },
+      { v: 'sick', t: 'きもちわるい', i: '🤢' }, { v: 'none', t: 'とくに ない', i: '🙆' }] },
+    { id: 'E3', b: 'E', t: 'yn', bad: 1, pre: 'つぎは すこし だいじな しつもんです。どんな こたえでも だいじょうぶ。', q: '「きえたい」「いなくなりたい」と おもう ことは ある?', e: '「いなく なりたいな」って おもう ことは ある?' },
+    { id: 'E3_1', b: 'E', t: 'freq', q: 'どのくらい おもう?', e: 'どのくらい よく おもう?', if: function (a) { return Y(a, 'E3'); },
+      o: [{ v: 1, t: 'つきに 1かい くらい' }, { v: 2, t: 'しゅうに 1かい くらい' }, { v: 3, t: 'しゅうに なんかいか' }, { v: 4, t: 'ほぼ まいにち' }] },
+    { id: 'E3_2', b: 'E', t: 'multi', q: 'そう おもうのは いつが おおい?', e: 'いつ そう おもう?', if: function (a) { return Y(a, 'E3'); }, o: [
+      { v: 'morning', t: 'あさ', i: '🌅' }, { v: 'school', t: 'がっこうに いる とき', i: '🏫' }, { v: 'night', t: 'よる', i: '🌙' },
+      { v: 'holiday', t: 'やすみの ひ', i: '🏠' }, { v: 'any', t: 'とくに きまって ない', i: '・' }] },
+    { id: 'E3_3', b: 'E', t: 'multi', q: 'どんな ときに おもう?', e: 'どんな ことが あった とき?', if: function (a) { return Y(a, 'E3'); }, o: [
+      { v: 'study', t: 'べんきょうが わからない とき', i: '📘' }, { v: 'scold', t: 'おこられた とき', i: '💢' }, { v: 'alone', t: 'ひとりの とき', i: '🧍' },
+      { v: 'tired', t: 'つかれた とき', i: '💦' }, { v: 'noreason', t: 'りゆうは とくに ない', i: '・' }] },
+    { id: 'E3_4', b: 'E', t: 'int', q: 'いま、その きもちは どのくらい つよい?', e: 'いまは どのくらい そう おもう?', if: function (a) { return Y(a, 'E3'); } },
+    { id: 'E3_5', b: 'E', t: 'yn', bad: 1, q: 'じぶんの からだを きずつけたいと おもった ことは ある?', e: 'じぶんを いたく したいと おもった ことは ある?', if: function (a) { return Y(a, 'E3'); } },
+    { id: 'E3_5a', b: 'E', t: 'yn', bad: 1, q: 'じっさいに きずつけた ことは ある?', e: 'ほんとうに いたく した ことは ある?', if: function (a) { return Y(a, 'E3_5'); } },
+    { id: 'E3_6', b: 'E', t: 'yn', bad: 1, q: 'どうやって きえるか、くわしく かんがえた ことは ある?', e: 'きえる ほうほうを かんがえた ことは ある?', if: function (a) { return Y(a, 'E3'); } },
+    { id: 'E3_6a', b: 'E', t: 'yn', bad: 1, q: 'それは この 1かげつの こと?', e: 'さいきんの こと?', if: function (a) { return Y(a, 'E3_6'); } },
+    { id: 'E3_7', b: 'E', t: 'multi', q: 'そう おもった ときに、すこし らくに なる ことは?', e: 'なにを すると すこし らく?', if: function (a) { return Y(a, 'E3'); }, o: [
+      { v: 'sleep', t: 'ねる', i: '😴' }, { v: 'book', t: 'ほん', i: '📖' }, { v: 'phone', t: 'スマホ', i: '📱' }, { v: 'tv', t: 'テレビ・どうが', i: '📺' },
+      { v: 'club', t: 'ぶかつ', i: '🏸' }, { v: 'people', t: 'だれかと いる', i: '👥' }, { v: 'none', t: 'とくに ない', i: '・' }] },
+    { id: 'E3_8', b: 'E', t: 'one', q: 'この きもちを、だれかに しって ほしい?', e: 'だれに わかって ほしい?', if: function (a) { return Y(a, 'E3'); }, o: [
+      { v: 'dad', t: 'おとうさん', i: '👨' }, { v: 'mom', t: 'おかあさん', i: '👩' }, { v: 'both', t: 'ふたりとも', i: '👨‍👩‍👧' }, { v: 'notnow', t: 'いまは いい', i: '・' }] },
+
+    // ---- F ----
+    { id: 'F1', b: 'F', t: 'yn', bad: 0, q: 'いえで ほっと できる?', e: 'いえで あんしん できる?' },
+    { id: 'F1a', b: 'F', t: 'pint', q: 'どのくらい ほっと できる?', e: 'あんしんは どのくらい?', if: function (a) { return Y(a, 'F1'); } },
+    { id: 'F2', b: 'F', t: 'yn', bad: 0, q: 'おとうさんと はなしたい ことは ある?', e: 'おとうさんと おはなし したい?' },
+    { id: 'F2a', b: 'F', t: 'lvl', q: 'おとうさんとは はなしやすい?', e: 'おとうさんと はなすのは かんたん?', good: 1,
+      faces: ['😶', '😕', '😐', '🙂', '😊'], labels: ['はなしにくい', 'すこし はなしにくい', 'ふつう', 'まあまあ はなしやすい', 'はなしやすい'] },
+    { id: 'F3', b: 'F', t: 'yn', bad: 0, q: 'おかあさんと はなしたい ことは ある?', e: 'おかあさんと おはなし したい?' },
+    { id: 'F3a', b: 'F', t: 'lvl', q: 'おかあさんとは はなしやすい?', e: 'おかあさんと はなすのは かんたん?', good: 1,
+      faces: ['😶', '😕', '😐', '🙂', '😊'], labels: ['はなしにくい', 'すこし はなしにくい', 'ふつう', 'まあまあ はなしやすい', 'はなしやすい'] },
+    { id: 'F4', b: 'F', t: 'yn', bad: 1, q: 'おこられるのが こわいと かんじる ことは ある?', e: 'おこられるのが こわい?' },
+    { id: 'F4a', b: 'F', t: 'int', q: 'どのくらい こわい?', e: 'こわさは どのくらい?', if: function (a) { return Y(a, 'F4'); } },
+
+    // ---- G ----
+    { id: 'G0', b: 'G', t: 'one', q: 'もし まほうで ひとつ だけ かわるなら、どれが いい?', e: 'ひとつ だけ かえられるなら どれ?', o: [
+      { v: 'study', t: 'じゅぎょうが わかるように なる', i: '📘' }, { v: 'morning', t: 'あさが らくに なる', i: '🌅' },
+      { v: 'tired', t: 'がっこうで つかれなく なる', i: '🔋' }, { v: 'friend', t: 'ともだちの ことが らくに なる', i: '👥' },
+      { v: 'home', t: 'いえで もっと ほっと できる', i: '🏠' }, { v: 'sleep', t: 'よく ねむれるように なる', i: '😴' },
+      { v: 'other', t: 'ほか', i: '✨' }, { v: 'none', t: 'とくに ない', i: '・' }] },
+    { id: 'G1', b: 'G', t: 'multi', q: 'あったら たすかる ものは?', e: 'あると うれしい ことは?', o: [
+      { v: 'call', t: 'あさの こえかけ', i: '📣' }, { v: 'study', t: 'べんきょうを いっしょに やる', i: '✏️' }, { v: 'alone', t: 'ひとりの じかん', i: '🧘' },
+      { v: 'rest', t: 'すこし やすむ こと', i: '🛌' }, { v: 'place', t: 'がっこう いがいで べんきょう できる ばしょ', i: '🏠' },
+      { v: 'listen', t: 'はなしを きいて もらう', i: '👂' }, { v: 'none', t: 'とくに ない', i: '・' }] },
+    { id: 'G2', b: 'G', t: 'one', q: 'じぶんの とくいと にがてが わかる テストが あったら?', e: 'とくいな ことが わかる テスト、やって みたい?', o: [
+      { v: 'yes', t: 'やって みたい', i: '🙋' }, { v: 'maybe', t: 'すこし きに なる', i: '🤔' }, { v: 'no', t: 'いや', i: '🙅' }] },
+    { id: 'H1', b: 'G', t: 'one', dyn: true, q: 'いままで こたえた なかで、いちばん おおきいのは どれ?', e: 'いちばん こまって いるのは どれ?' },
+    { id: 'G3', b: 'G', t: 'text', q: 'ほかに かきたい ことが あれば、かいてね。なにも かかなくても だいじょうぶ。', e: 'かきたい ことが あれば どうぞ。' }
+  ];
+  var QI = {}; Q.forEach(function (q, i) { q.idx = i; QI[q.id] = q; });
+
+  var BLOCKS = [
+    { k: 'A', name: 'まずは かんたんな しつもん', msg: 'はじめるよ。ゆっくりで だいじょうぶ。' },
+    { k: 'B', name: 'あさの こと', msg: 'ありがとう。つぎは あさの ことを きくね。' },
+    { k: 'C', name: 'がっこうの こと', msg: 'いい ちょうし。つぎは がっこうの ことだよ。' },
+    { k: 'D', name: 'ぶかつの こと', msg: 'はんぶん すぎたよ。こたえて くれて ありがとう。' },
+    { k: 'E', name: 'きもちと からだ', msg: 'つぎは きもちと からだの こと。どんな こたえでも だいじょうぶ。' },
+    { k: 'F', name: 'いえの こと', msg: 'あと すこし。ここまで ほんとうに ありがとう。' },
+    { k: 'G', name: 'さいごの しつもん', msg: 'さいごの しつもんだよ。' }
+  ];
+
+  // H1 の候補(答えから出てくる)
+  var H1_CAND = [
+    { v: 'study', t: 'じゅぎょうが わからない', i: '📘', when: function (a) { return inc(a, 'C1a', 'class') || Y(a, 'C9'); } },
+    { v: 'morning', t: 'あさ ひとりで いる こと', i: '🌫️', when: function (a) { return Y(a, 'B3'); } },
+    { v: 'walk', t: 'がっこうまでの みち', i: '🚶', when: function (a) { return inc(a, 'B2', 'walk'); } },
+    { v: 'room', t: 'きょうしつに いる こと', i: '🪑', when: function (a) { return inc(a, 'B2', 'room') || incAny(a, 'C1a', ['break']); } },
+    { v: 'friend', t: 'ともだちの こと', i: '👥', when: function (a) { return inc(a, 'C1a', 'friend') || N(a, 'C5'); } },
+    { v: 'fit', t: 'まわりに あわせる こと', i: '🎭', when: function (a) { return Y(a, 'C6'); } },
+    { v: 'teacher', t: 'せんせいの こと', i: '🧑‍🏫', when: function (a) { return Y(a, 'C7'); } },
+    { v: 'sense', t: 'おとや ひとの おおさ', i: '🔊', when: function (a) { return inc(a, 'C1a', 'sense') || inc(a, 'B2a', 'noise'); } },
+    { v: 'test', t: 'テストや せいせき', i: '📝', when: function (a) { return Y(a, 'C9'); } },
+    { v: 'sleep', t: 'ねむれない こと', i: '😴', when: function (a) { return N(a, 'A3'); } },
+    { v: 'tired', t: 'からだが だるい・つかれる', i: '🥱', when: function (a) { return inc(a, 'E5', 'tired') || inc(a, 'B2a', 'tired'); } },
+    { v: 'mood', t: 'きもちが しずむ こと', i: '🌧️', when: function (a) { return Y(a, 'E1'); } },
+    { v: 'worry', t: 'そわそわ・ふあん', i: '🌀', when: function (a) { return Y(a, 'E2'); } },
+    { v: 'scold', t: 'おこられる こと', i: '💢', when: function (a) { return Y(a, 'F4'); } },
+    { v: 'home', t: 'いえで ほっと できない', i: '🏠', when: function (a) { return N(a, 'F1'); } }
+  ];
+  function h1Options(a) {
+    var o = H1_CAND.filter(function (c) { return c.when(a); }).map(function (c) { return { v: c.v, t: c.t, i: c.i }; });
+    if (o.length < 2) return null;
+    o.push({ v: 'other', t: 'このなかには ない', i: '・' });
+    return o;
+  }
+  function optionsOf(q, a) {
+    if (q.dyn) return h1Options(a) || [];
+    if (q.o) return q.o;
+    if (q.t === 'yn') return YN;
+    if (q.t === 'freq') return FREQ;
+    return null;
+  }
+  function visible(q, a) {
+    if (q.dyn) return !!h1Options(a);
+    return !q.if || q.if(a);
+  }
+
+  // ---------- 値を 0〜1 に ----------
+  // 保存する生の値: yn 0/1(やわらかい答えは小数), int/pint 0〜4, lvl 0〜4, freq 1〜4, one 文字列(複数を選んだら配列), multi 配列
+  function norm(q, v) {
+    if (v === undefined || v === null) return null;
+    if (q.t === 'yn') return v;
+    if (q.t === 'int' || q.t === 'pint') return (v + 1) / 5;
+    if (q.t === 'lvl') return v / 4;
+    if (q.t === 'freq') return v / 4;
+    return null;
+  }
+
+  // ---------- 9領域 ----------
+  var DOM = [
+    { k: 'd1', n: '①不安の回避' }, { k: 'd2', n: '②人や評価の場面の回避' }, { k: 'd3', n: '③親の存在' },
+    { k: 'd4', n: '④学校外の楽しみ' }, { k: 'd5', n: '⑤学業の困難' }, { k: 'd6', n: '⑥感覚の負担' },
+    { k: 'd7', n: '⑦気分・元気' }, { k: 'd8', n: '⑧気持ちの言語化のしにくさ' }, { k: 'd9', n: '⑨学校とのつながり(高いほど良い)' }
+  ];
+  // [質問ID, 値の出し方]  y=はい→1, n=いいえ→1, s=数値そのまま, r=反転, c:[...]=その選択肢を選べば1, cnt:n=選んだ数/n
+  var CONTRIB = {
+    d1: [['B1', 'y'], ['B1a', 's'], ['B3a', { c: ['alone'] }], ['B4b', 's'], ['E2', 'y'], ['E2a', 's'], ['F4', 'y'], ['F4a', 's']],
+    d2: [['B2', { c: ['room'] }], ['B2a', { c: ['people'] }], ['C2b', 'n'], ['C2c', 's'], ['C5', 'n'], ['C6', 'y'], ['C6a', 's'], ['C7', 'y'], ['C7a', 's'], ['C9', 'y'], ['C9a', 's']],
+    d3: [['B2a', { c: ['alone'] }], ['B3', 'y'], ['B3a', { c: ['can', 'mom'] }]],
+    d4: [['A1', { c: ['phone', 'tv', 'game'] }], ['B3a', { c: ['nostop'] }], ['B4', 'y'], ['B4a', { c: ['phone', 'tv'] }]],
+    d5: [['C2', 'r'], ['C3', { cnt: 3, all: 'all' }], ['C4', { c: ['e34', 'early'], skip: ['forget'] }], ['C9', 'y'], ['C9a', 's'], ['D2', 'y']],
+    d6: [['B2a', { c: ['noise'] }], ['C6', 'y'], ['C6a', 's'], ['C8', 's']],
+    d7: [['A0', 'n'], ['A0a', 'r'], ['A2', 'r'], ['A3', 'n'], ['A3a', 's'], ['B0', 'n'], ['B4b', 's'], ['E0', 'n'], ['E1', 'y'], ['E1a', 's'], ['E5', { cnt: 2, none: 'none' }], ['F1', 'n'], ['F1a', 'r']],
+    d9: [['C0', 'y'], ['C0a', 's'], ['C0c', 'y'], ['C5', 'y'], ['D1', 'y'], ['D1a', 's']]
+  };
+  function contribValue(q, raw, how) {
+    if (raw === undefined || raw === null) return null;
+    if (how === 'y') return typeof raw === 'number' ? raw : null;
+    if (how === 'n') return typeof raw === 'number' ? 1 - raw : null;
+    if (how === 's') return norm(q, raw);
+    if (how === 'r') { var x = norm(q, raw); return x === null ? null : 1 - x; }
+    var arr = Array.isArray(raw) ? raw : [raw];
+    if (how.skip && arr.length === 1 && how.skip.indexOf(arr[0]) >= 0) return null;
+    if (how.c) { for (var i = 0; i < how.c.length; i++) if (arr.indexOf(how.c[i]) >= 0) return 1; return 0; }
+    if (how.cnt) {
+      if (how.all && arr.indexOf(how.all) >= 0) return 1;
+      var n = arr.filter(function (x) { return x !== how.none; }).length;
+      return Math.min(n / how.cnt, 1);
+    }
+    return null;
+  }
+
+  // 今の答えで「出題された」質問の一覧
+  function shownList(a) { return Q.filter(function (q) { return visible(q, a); }); }
+
+  function score(data) {
+    var a = data.a, u = data.u || {};
+    var shown = {}; shownList(a).forEach(function (q) { shown[q.id] = 1; });
+    var res = {};
+    Object.keys(CONTRIB).forEach(function (k) {
+      var vals = [], asked = 0;
+      CONTRIB[k].forEach(function (c) {
+        var q = QI[c[0]]; if (!shown[c[0]]) return;
+        asked++;
+        var v = contribValue(q, a[c[0]], c[1]);
+        if (v !== null) vals.push(v);
+      });
+      var s = vals.length ? Math.round(vals.reduce(function (x, y) { return x + y; }, 0) / vals.length * 100) : null;
+      res[k] = { s: s, n: vals.length, asked: asked, conf: asked ? vals.length / asked : 0 };
+    });
+    // ⑧
+    var answered = 0, dk = 0, feelUnknown = 0, nothingFelt = 0, kinds = { meaning: 0, feel: 0, choose: 0, depends: 0, hard: 0 };
+    Object.keys(shown).forEach(function (id) { if (has(a, id)) answered++; });
+    Object.keys(u).forEach(function (id) {
+      var x = u[id]; if (!shown[id]) return;
+      dk++;
+      if (x.k && kinds[x.k] !== undefined) kinds[x.k]++;
+      if (x.k === 'feel') feelUnknown++;
+      if (x.body && x.body.indexOf('nothing') >= 0) nothingFelt++;
+    });
+    var totalShown = Object.keys(shown).length;
+    var base = Math.max(answered + dk, 1);
+    res.d8 = { s: Math.min(100, Math.round((feelUnknown + nothingFelt) / base * 100)), n: dk, asked: totalShown, conf: 1 };
+    res.meta = { answered: answered, dk: dk, dkRate: Math.round(dk / Math.max(totalShown, 1) * 100), kinds: kinds, shown: totalShown,
+      skipped: (data.sk || []).filter(function (id) { return shown[id]; }) };
+    return res;
+  }
+
+  function e3Level(a) {
+    if (!has(a, 'E3')) return { lv: 'unanswered', t: 'E3に答えていない(わからない・とばす)' };
+    if (!Y(a, 'E3')) return { lv: 'none', t: '該当なし' };
+    if (Y(a, 'E3_5a') || Y(a, 'E3_6')) return { lv: 'urgent', t: 'すぐに相談', act: '今週中に医療機関かエール(042-589-8877)に相談してください。夜間・休日で心配なときは #7119 や子どもの救急相談も使えます。本人を責めず、そばにいる時間を増やしてください。' };
+    var f = a['E3_1'], st = a['E3_4'];
+    if ((typeof f === 'number' && f >= 2) || (typeof st === 'number' && st >= 2) || Y(a, 'E3_5'))
+      return { lv: 'soon', t: '早めに相談', act: '今月中に、できれば早めにエールなどの相談先に伝えてください。' };
+    return { lv: 'watch', t: '注意', act: '様子を見ながら、次回の回答と比べてください。気になる変化があれば相談先へ。' };
+  }
+
+  function patterns(a, sc) {
+    var out = [];
+    function S(k) { return sc[k] && sc[k].s !== null ? sc[k].s : -1; }
+    if (Y(a, 'B3') && incAny(a, 'B3a', ['alone', 'can']))
+      out.push({ k: 'alone', n: '一人の朝', t: '母親がいる朝は行けるという家での観察と合っています。', h: '母親と離れることへの不安' });
+    if (S('d5') >= 60 && incAny(a, 'C4', ['e34', 'early']))
+      out.push({ k: 'study', n: '学習のつまずき', t: '小学校中学年からのつまずきが続いている可能性があります。', h: '学習のつまずきの積み重ね、境界知能' });
+    if (typeof a.C6a === 'number' && norm(QI.C6a, a.C6a) >= 0.6 && S('d6') >= 60)
+      out.push({ k: 'mask', n: '学校での気疲れ', t: '学校で周りに合わせて消耗している可能性があります。', h: '自閉スペクトラム症の特性、感覚の負担' });
+    if (S('d4') >= 60 && S('d1') >= 0 && S('d1') < 30 && S('d2') < 30)
+      out.push({ k: 'easy', n: '休むと楽', t: '学校がつらいというより、休んだ日の過ごしやすさが続いている可能性があります。', h: '家のルールの見直し' });
+    if (S('d7') >= 60 || (typeof a.E1a === 'number' && a.E1a >= 3))
+      out.push({ k: 'mood', n: '気分の落ち込み', t: '気分の落ち込みが強い可能性があります。専門家への相談を優先してください。', h: '気分の落ち込み' });
+    if (S('d8') >= 40 || sc.meta.dkRate >= 30)
+      out.push({ k: 'words', n: '言葉にしにくい', t: '気持ちをつかんで言葉にするのが苦手な可能性があります。', h: '気持ちを言葉にしにくい傾向' });
+    return out;
+  }
+
+  // ---------- 文字の小道具 ----------
+  function optText(q, v, a) {
+    var o = optionsOf(q, a || {}) || [];
+    var arr = Array.isArray(v) ? v : [v];
+    return arr.map(function (x) { var f = o.filter(function (y) { return y.v === x; })[0]; return f ? f.t : String(x); });
+  }
+  function answerText(q, v, a) {
+    if (v === undefined || v === null) return '';
+    if (q.t === 'yn') { if (v === 1) return 'はい'; if (v === 0) return 'いいえ'; return 'どちらとも(' + v + ')'; }
+    if (q.t === 'int' || q.t === 'pint') return INT_LABELS[v] || String(v);
+    if (q.t === 'lvl') return (q.labels && q.labels[v]) || String(v);
+    if (q.t === 'freq') return optText(q, v)[0];
+    if (q.t === 'text') return String(v);
+    return optText(q, v, a).join('、');
+  }
+  function joinJa(arr) {
+    if (!arr.length) return '';
+    if (arr.length === 1) return arr[0];
+    return arr.slice(0, -1).join('、') + 'や ' + arr[arr.length - 1];
+  }
+
+  // ---------- いっしょに読む文章 ----------
+  function togetherText(data) {
+    var a = data.a, sc = score(data), lines = [];
+    var likes = [];
+    if (has(a, 'A1')) likes = optText(QI.A1, a.A1).filter(function (t) { return t !== 'とくに ない' && t !== 'ほか'; });
+    var fun = [];
+    if (has(a, 'C0b')) fun = optText(QI.C0b, a.C0b).filter(function (t) { return t !== 'ほか'; });
+    if (likes.length) lines.push('いえでは ' + joinJa(likes) + 'が すき。');
+    if (fun.length) lines.push('がっこうでは ' + joinJa(fun) + 'が たのしいと かんじて いる。');
+    if (has(a, 'C0d')) lines.push('すきな きょうかは ' + joinJa(optText(QI.C0d, a.C0d)) + '。');
+    if (Y(a, 'D1')) lines.push('ぶかつが すき。');
+    if (has(a, 'E0') && Y(a, 'E0')) lines.push('たのしみに して いる ことが ある。');
+
+    if (sc.d7.s !== null && sc.d7.s >= 80) lines.push('さいきん、げんきが でにくい みたい。');
+    else if (typeof a.A2 === 'number') lines.push('さいきんの げんきは 「' + QI.A2.labels[a.A2] + '」。');
+
+    var hard = [];
+    if (has(a, 'C1a')) hard = optText(QI.C1a, a.C1a).filter(function (t) { return t !== 'ほか'; });
+    if (hard.length) lines.push('がっこうでは ' + joinJa(hard) + 'が しんどいと かんじて いる。');
+    if (has(a, 'B2') && !inc(a, 'B2', 'none')) lines.push('あさは 「' + optText(QI.B2, a.B2)[0] + '」が いちばん おもく なる。');
+    if (has(a, 'B3a') && !inc(a, 'B3a', 'other')) lines.push('あさは 「' + optText(QI.B3a, a.B3a)[0] + '」と かんじて いる。');
+    if (has(a, 'C2')) lines.push('じゅぎょうは 「' + QI.C2.labels[a.C2] + '」。');
+    if (has(a, 'C4') && !inc(a, 'C4', 'forget')) lines.push('わからなく なったのは 「' + optText(QI.C4, a.C4)[0] + '」 ごろ から。');
+
+    if (has(a, 'H1') && !inc(a, 'H1', 'other')) lines.push('いま いちばん おおきいのは 「' + optText(QI.H1, a.H1, a)[0] + '」。');
+    if (has(a, 'G0') && !incAny(a, 'G0', ['none', 'other'])) lines.push('まほうで ひとつ かえるなら 「' + optText(QI.G0, a.G0)[0] + '」。');
+
+    if (sc.d8.s >= 40 || sc.meta.dk >= 3) {
+      var bodies = [];
+      Object.keys(data.u || {}).forEach(function (id) { (data.u[id].body || []).forEach(function (b) { if (b !== 'nothing' && bodies.indexOf(b) < 0) bodies.push(b); }); });
+      var bt = bodies.map(function (b) { var f = U2A_OPTS.filter(function (o) { return o.v === b; })[0]; return f ? f.t : b; });
+      lines.push('ことばに しにくい きもちも あった。' + (bt.length ? 'からだでは 「' + bt.join('、') + '」を かんじて いた。' : ''));
+    }
+    var help = [];
+    if (has(a, 'G1')) help = optText(QI.G1, a.G1).filter(function (t) { return t !== 'とくに ない'; });
+    if (help.length) lines.push(joinJa(help) + 'が あると たすかる。');
+    var talk = [];
+    if (Y(a, 'F2')) talk.push('おとうさん');
+    if (Y(a, 'F3')) talk.push('おかあさん');
+    if (talk.length) lines.push(talk.join('とも ') + 'と はなしたい ことが ある。');
+    lines.push('ここまで しょうじきに こたえて くれて、ありがとう。');
+    return lines;
+  }
+
+  // ---------- 「わからない」深掘りの選択肢 ----------
+  var U0_OPTS = [
+    { v: 'meaning', t: 'しつもんの いみが よく わからない', i: '❓' },
+    { v: 'feel', t: 'じぶんの きもちが よく わからない', i: '🌫️' },
+    { v: 'choose', t: 'いくつか あって ひとつに えらべない', i: '🔀' },
+    { v: 'depends', t: 'その ときに よって ちがう', i: '🌗' },
+    { v: 'hard', t: 'こたえにくい・かんがえたくない', i: '🙊' }
+  ];
+  var U2A_OPTS = [
+    { v: 'heavy', t: 'おもい', i: '🪨' }, { v: 'fidget', t: 'そわそわ する', i: '🌀' }, { v: 'chest', t: 'むねが ぎゅっと する', i: '💓' },
+    { v: 'belly', t: 'おなかが へんな かんじ', i: '🫃' }, { v: 'hot', t: 'かおが あつい', i: '🥵' }, { v: 'nothing', t: 'なにも かんじない', i: '⬜' }
+  ];
+  var U2B_FACES = ['😄', '🙂', '😐', '😟', '😫'];
+  var U2B_LABELS = ['にこにこ', 'まあまあ', 'ふつう', 'つらい', 'とても つらい'];
+  var U2C_OPTS = [
+    { v: 'iya', t: 'いや', i: '🙅' }, { v: 'kowai', t: 'こわい', i: '😨' }, { v: 'tsukare', t: 'つかれた', i: '🥱' },
+    { v: 'kanashii', t: 'かなしい', i: '😢' }, { v: 'iraira', t: 'イライラ', i: '😠' }, { v: 'nashi', t: 'なにも かんじない', i: '⬜' },
+    { v: 'other', t: 'ほかの ことば', i: '✨' }
+  ];
+  var U4A_OPTS = [{ v: 'good', t: 'いい ときが おおい', i: '☀️' }, { v: 'bad', t: 'わるい ときが おおい', i: '🌧️' }, { v: 'same', t: 'おなじ くらい', i: '⛅' }];
+
+  // 顔・体で答えたときの、やわらかい値
+  function softValue(q, face) {
+    if (q.t === 'yn') return q.bad ? Math.round(face / 4 * 100) / 100 : Math.round((1 - face / 4) * 100) / 100;
+    if (q.t === 'int') return face;
+    if (q.t === 'pint') return 4 - face;
+    if (q.t === 'lvl') return q.good ? 4 - face : face;
+    if (q.t === 'freq') return Math.max(1, face);
+    return null;
+  }
+
+  // ---------- 暗号化 ----------
+  function b64u(bytes) {
+    var s = ''; for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function unb64u(str) {
+    str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) str += '=';
+    var s = atob(str), b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b;
+  }
+  function streamBytes(bytes, ts) {
+    var stream = new Blob([bytes]).stream().pipeThrough(ts);
+    return new Response(stream).arrayBuffer().then(function (b) { return new Uint8Array(b); });
+  }
+  function hasCS() { return typeof CompressionStream !== 'undefined'; }
+  var EC = { name: 'ECDH', namedCurve: 'P-256' };
+
+  function makeKeys() {
+    return crypto.subtle.generateKey(EC, true, ['deriveKey']).then(function (kp) {
+      return Promise.all([crypto.subtle.exportKey('raw', kp.publicKey), crypto.subtle.exportKey('jwk', kp.privateKey)])
+        .then(function (r) { return { pub: b64u(new Uint8Array(r[0])), priv: r[1] }; });
+    });
+  }
+  function encrypt(obj, pubB64) {
+    var plain = new TextEncoder().encode(JSON.stringify(obj));
+    var compressed = hasCS() ? streamBytes(plain, new CompressionStream('deflate-raw')) : Promise.resolve(plain);
+    return Promise.all([compressed, crypto.subtle.importKey('raw', unb64u(pubB64), EC, false, []), crypto.subtle.generateKey(EC, true, ['deriveKey'])])
+      .then(function (r) {
+        var body = r[0], pub = r[1], eph = r[2];
+        return crypto.subtle.deriveKey({ name: 'ECDH', public: pub }, eph.privateKey, { name: 'AES-GCM', length: 256 }, false, ['encrypt'])
+          .then(function (key) {
+            var iv = crypto.getRandomValues(new Uint8Array(12));
+            return Promise.all([crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, body), crypto.subtle.exportKey('raw', eph.publicKey)])
+              .then(function (x) {
+                var ct = new Uint8Array(x[0]), ep = new Uint8Array(x[1]);
+                var out = new Uint8Array(1 + ep.length + 12 + ct.length);
+                out[0] = hasCS() ? 1 : 2; out.set(ep, 1); out.set(iv, 1 + ep.length); out.set(ct, 1 + ep.length + 12);
+                return b64u(out);
+              });
+          });
+      });
+  }
+  function decrypt(str, privJwk) {
+    var b = unb64u(str.trim()), ver = b[0];
+    if (ver !== 1 && ver !== 2) return Promise.reject(new Error('形式が違います'));
+    var ep = b.slice(1, 66), iv = b.slice(66, 78), ct = b.slice(78);
+    return Promise.all([crypto.subtle.importKey('jwk', privJwk, EC, false, ['deriveKey']), crypto.subtle.importKey('raw', ep, EC, false, [])])
+      .then(function (r) { return crypto.subtle.deriveKey({ name: 'ECDH', public: r[1] }, r[0], { name: 'AES-GCM', length: 256 }, false, ['decrypt']); })
+      .then(function (key) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct); })
+      .then(function (plain) {
+        var p = new Uint8Array(plain);
+        return ver === 1 ? streamBytes(p, new DecompressionStream('deflate-raw')) : p;
+      })
+      .then(function (p) { return JSON.parse(new TextDecoder().decode(p)); });
+  }
+
+  return {
+    Q: Q, QI: QI, BLOCKS: BLOCKS, DOM: DOM, INT_FACES: INT_FACES, INT_LABELS: INT_LABELS, POS_FACES: POS_FACES,
+    U0_OPTS: U0_OPTS, U2A_OPTS: U2A_OPTS, U2B_FACES: U2B_FACES, U2B_LABELS: U2B_LABELS, U2C_OPTS: U2C_OPTS, U4A_OPTS: U4A_OPTS,
+    optionsOf: optionsOf, visible: visible, shownList: shownList, norm: norm, softValue: softValue,
+    score: score, e3Level: e3Level, patterns: patterns, togetherText: togetherText, answerText: answerText, optText: optText,
+    makeKeys: makeKeys, encrypt: encrypt, decrypt: decrypt, b64u: b64u, unb64u: unb64u, Y: Y, N: N, has: has
+  };
+})();
+</script>
+<script>(function () {
+  'use strict';
+  var C = CORE, Q = C.Q, QI = C.QI;
+  var LS_PUB = 'qv_pub', LS_PAR = 'qv_par', LS_PROG = 'qv_prog';
+  var app = document.getElementById('app');
+
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { } }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  // ---------- 設定リンク(#k=公開鍵&p=親用アプリのURL) ----------
+  (function readSetup() {
+    if (!location.hash || location.hash.indexOf('k=') < 0) return;
+    var p = new URLSearchParams(location.hash.slice(1));
+    if (p.get('k')) lsSet(LS_PUB, p.get('k'));
+    if (p.get('p')) lsSet(LS_PAR, p.get('p'));
+    history.replaceState(null, '', location.pathname + location.search);
+    window.__justSetup = true;
+  })();
+
+  // ---------- 状態 ----------
+  var S;
+  function fresh() { return { a: {}, u: {}, sk: [], tm: {}, st: Date.now(), stack: [{ k: 'intro' }], seen: {} }; }
+  function save() { lsSet(LS_PROG, JSON.stringify(S)); }
+  function cur() { return S.stack[S.stack.length - 1]; }
+  function push(scr) { S.stack.push(scr); save(); render(); window.scrollTo(0, 0); }
+  function back() { if (S.stack.length > 1) { S.stack.pop(); save(); render(); } }
+
+  // ---------- 進み方 ----------
+  function nextFrom(idx) {
+    for (var i = idx + 1; i < Q.length; i++) {
+      var q = Q[i];
+      if (!C.visible(q, S.a)) continue;
+      if (!S.seen[q.b]) { S.seen[q.b] = 1; return { k: 'block', b: q.b, then: q.id }; }
+      return { k: 'q', id: q.id };
+    }
+    return { k: 'sum' };
+  }
+  function goNext(id) { push(nextFrom(QI[id].idx)); }
+  function unSkip(id) { var i = S.sk.indexOf(id); if (i >= 0) S.sk.splice(i, 1); }
+  var t0 = 0;
+  function stamp(id) { var d = Math.min(600, Math.round((Date.now() - t0) / 1000)); S.tm[id] = (S.tm[id] || 0) + d; }
+
+  function answer(id, v, keepU) {
+    stamp(id);
+    S.a[id] = v; unSkip(id);
+    if (!keepU) delete S.u[id];
+    goNext(id);
+  }
+  function skip(id) { stamp(id); delete S.a[id]; if (S.sk.indexOf(id) < 0) S.sk.push(id); goNext(id); }
+  function dontKnow(id) {
+    stamp(id);
+    var c = cur();
+    if (c.k !== 'q') { // 深掘り中にもう一度「わからない」
+      S.u[id] = S.u[id] || {}; S.u[id].again = 1; delete S.a[id]; goNext(id); return;
+    }
+    delete S.a[id]; S.u[id] = { k: null };
+    push({ k: 'u0', id: id });
+  }
+
+  // ---------- 読み上げ ----------
+  function speak(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text); u.lang = 'ja-JP'; u.rate = 0.9;
+      speechSynthesis.speak(u);
+    } catch (e) { }
+  }
+
+  // ---------- 部品 ----------
+  function progress() {
+    var c = cur(), idx = 0;
+    if (c.id && QI[c.id]) idx = QI[c.id].idx;
+    else if (c.then) idx = QI[c.then].idx;
+    else if (c.k === 'sum' || c.k === 'qr' || c.k === 'end') idx = Q.length;
+    return Math.round(idx / Q.length * 100);
+  }
+  function topBar(showBack) {
+    return '<div class="top">' + (showBack ? '<button class="iconbtn" data-act="back" aria-label="もどる">← もどる</button>' : '') +
+      '<div class="bar"><i style="width:' + progress() + '%"></i></div>' +
+      '<button class="iconbtn" data-act="say" aria-label="よみあげ">🔊</button></div>';
+  }
+  function optBtn(o, on, extra) {
+    return '<button class="opt' + (on ? ' on' : '') + (extra || '') + '" data-v=\'' + esc(JSON.stringify(o.v)) + '\'>' +
+      (o.i ? '<span class="ic">' + o.i + '</span>' : '') + '<span>' + esc(o.t) + '</span></button>';
+  }
+  function footer(id, opts) {
+    opts = opts || {};
+    return '<div class="foot">' + (opts.noDk ? '' : '<button class="dk" data-act="dk">🤔 わからない</button>') +
+      '<button data-act="skip">とばす</button></div>';
+  }
+  function blockName(b) { return (C.BLOCKS.filter(function (x) { return x.k === b; })[0] || {}).name || ''; }
+
+  // 質問の本体(種類ごと)
+  function body(q, text, prev, mode) {
+    var h = '', t = q.t;
+    if (mode === 'multi' && t === 'one') t = 'multi';
+    var opts = C.optionsOf(q, S.a);
+    if (t === 'yn') {
+      h += '<div class="opts two">' + opts.map(function (o) { return optBtn(o, prev === o.v, ' big'); }).join('') + '</div>';
+    } else if (t === 'int' || t === 'pint' || t === 'lvl') {
+      var faces = t === 'lvl' ? q.faces : (t === 'pint' ? C.POS_FACES : C.INT_FACES);
+      var labels = t === 'lvl' ? q.labels : C.INT_LABELS;
+      h += '<div class="faces">' + faces.map(function (f, i) {
+        return '<button class="face' + (prev === i ? ' on' : '') + '" data-v="' + i + '"><span class="f">' + f + '</span><span class="l">' + esc(labels[i]) + '</span></button>';
+      }).join('') + '</div>';
+    } else if (t === 'freq') {
+      h += '<div class="opts">' + opts.map(function (o) { return optBtn(o, prev === o.v); }).join('') + '</div>';
+    } else if (t === 'one') {
+      h += '<div class="opts' + (opts.length > 4 ? ' grid' : '') + '">' + opts.map(function (o) { return optBtn(o, prev === o.v); }).join('') + '</div>';
+    } else if (t === 'multi') {
+      var sel = Array.isArray(prev) ? prev : (prev ? [prev] : []);
+      h += '<p class="hint">いくつ えらんでも いいよ。えらんだら 「つぎへ」</p>';
+      h += '<div class="opts grid" data-multi="1">' + opts.map(function (o) { return optBtn(o, sel.indexOf(o.v) >= 0); }).join('') + '</div>';
+      h += '<button class="go" data-act="multi-done"' + (sel.length ? '' : ' disabled') + '>つぎへ →</button>';
+    } else if (t === 'text') {
+      h += '<textarea id="txt" maxlength="200" placeholder="ここに かけるよ">' + esc(prev || '') + '</textarea>';
+      h += '<button class="go" data-act="text-done">つぎへ →</button>';
+    }
+    return h;
+  }
+
+  // ---------- 画面 ----------
+  var sayText = '';
+  function render() {
+    var c = cur(), h = '';
+    t0 = Date.now();
+    if (!lsGet(LS_PUB)) return renderNoSetup();
+
+    if (c.k === 'intro') {
+      sayText = 'これは、うまく ことばに できない きもちを、ことばに する おてつだいを する プログラムです。じぶんの きもちを しょうじきに えらぶのは、とても ゆうきの いる ことです。';
+      h = topBar(false) + '<div class="main"><div class="card">' +
+        '<h1>これは、うまく ことばに できない きもちを、ことばに する おてつだいを する プログラムです。</h1>' +
+        '<p>じぶんの きもちを しょうじきに えらぶのは、とても ゆうきの いる ことです。この がめんを ひらいて くれた だけで、もう いっぽ すすんで います。ありがとう。</p>' +
+        '<ul style="font-size:20px;padding-left:1.2em;color:var(--ink)">' +
+        '<li>こたえに せいかいは ありません。どれを えらんでも、まちがいでは ありません。</li>' +
+        '<li>「わからない」も たいせつな こたえです。おすと、べつの ききかたで もう いちど ききます。</li>' +
+        '<li>こたえたくない しつもんは 「とばす」で とばせます。</li>' +
+        '<li>こたえは、おとうさんと おかあさんが よみます。あなたの ことを もっと わかりたくて つくりました。おこる ための ものでは ありません。</li>' +
+        '<li>さいごに、あなたの きもちを ぶんしょうに まとめて、いっしょに よみます。</li>' +
+        '<li>ぜんぶで 10〜15ふん くらい。とちゅうで やすんでも だいじょうぶ。🔊 を おすと よみあげます。</li></ul>' +
+        '<button class="go" data-act="start">はじめる</button></div></div>';
+    } else if (c.k === 'resume') {
+      sayText = 'まえの つづきから やる? はじめから やる?';
+      h = '<div class="main"><div class="card msg"><div class="big">📒</div><p>まえの つづきが あるよ。</p>' +
+        '<button class="go" data-act="resume">つづきから</button>' +
+        '<div class="foot"><button data-act="restart">はじめから やりなおす</button></div></div></div>';
+    } else if (c.k === 'block') {
+      var bl = C.BLOCKS.filter(function (x) { return x.k === c.b; })[0];
+      sayText = bl.msg;
+      h = topBar(true) + '<div class="main"><div class="card msg"><div class="big">' + ({ A: '🌱', B: '🌅', C: '🏫', D: '🏸', E: '💭', F: '🏠', G: '⭐' })[c.b] + '</div>' +
+        '<p>' + esc(bl.msg) + '</p><p class="small">' + esc(bl.name) + '</p>' +
+        '<button class="go" data-act="block-go">つぎへ →</button></div></div>';
+    } else if (c.k === 'q' || c.k === 'u1' || c.k === 'u3' || c.k === 'u4b') {
+      var q = QI[c.id];
+      var text = q.q, lead = '', mode = null;
+      if (c.k === 'u1') { text = q.e; lead = 'ききかたを かえるね。'; }
+      if (c.k === 'u3') { mode = 'multi'; lead = 'いくつ えらんでも いいよ。'; }
+      if (c.k === 'u4b') { lead = 'わるい ときの ことを おもいだして こたえてね。'; }
+      var prev = c.k === 'q' ? S.a[c.id] : undefined;
+      var opts = C.optionsOf(q, S.a) || [];
+      sayText = (q.pre ? q.pre + '。' : '') + lead + text + '。' + opts.map(function (o) { return o.t; }).join('、');
+      h = topBar(true) + '<div class="main"><div class="card">' +
+        '<div class="blk">' + esc(blockName(q.b)) + '</div>' +
+        (q.pre && c.k === 'q' ? '<div class="pre">' + esc(q.pre) + '</div>' : '') +
+        (lead ? '<div class="pre">' + esc(lead) + '</div>' : '') +
+        '<h1>' + esc(text) + '</h1>' + body(q, text, prev, mode) + '</div>' +
+        footer(c.id, { noDk: q.t === 'text' }) + '</div>';
+    } else if (c.k === 'u0') {
+      sayText = 'わからないに ちかいのは どれ? ' + C.U0_OPTS.map(function (o) { return o.t; }).join('、');
+      h = topBar(true) + '<div class="main"><div class="card"><div class="pre">おしえて くれて ありがとう。</div>' +
+        '<h1>「わからない」に ちかいのは どれ?</h1><div class="opts">' + C.U0_OPTS.map(function (o) { return optBtn(o, false); }).join('') + '</div></div>' +
+        '<div class="foot"><button data-act="skip">とばす</button></div></div>';
+    } else if (c.k === 'u2a') {
+      sayText = 'その とき、からだは どんな かんじ? ' + C.U2A_OPTS.map(function (o) { return o.t; }).join('、');
+      h = topBar(true) + '<div class="main"><div class="card"><div class="pre">きもちじゃ なくて、からだの かんじで おしえてね。</div>' +
+        '<h1>その ことを かんがえると、からだは どんな かんじ?</h1>' +
+        '<p class="hint">いくつ えらんでも いいよ。えらんだら 「つぎへ」</p>' +
+        '<div class="opts grid" data-multi="1">' + C.U2A_OPTS.map(function (o) { return optBtn(o, false); }).join('') + '</div>' +
+        '<button class="go" data-act="u2a-done" disabled>つぎへ →</button></div>' + footer(c.id) + '</div>';
+    } else if (c.k === 'u2b') {
+      sayText = 'いちばん ちかい かおは どれ?';
+      h = topBar(true) + '<div class="main"><div class="card"><h1>いちばん ちかい かおは どれ?</h1><div class="faces">' +
+        C.U2B_FACES.map(function (f, i) { return '<button class="face" data-v="' + i + '"><span class="f">' + f + '</span><span class="l">' + C.U2B_LABELS[i] + '</span></button>'; }).join('') +
+        '</div></div>' + footer(c.id) + '</div>';
+    } else if (c.k === 'u2c') {
+      sayText = 'ことばに するなら、ちかいのは どれ? ' + C.U2C_OPTS.map(function (o) { return o.t; }).join('、');
+      h = topBar(true) + '<div class="main"><div class="card"><h1>ことばに するなら、ちかいのは どれ?</h1><div class="opts grid">' +
+        C.U2C_OPTS.map(function (o) { return optBtn(o, false); }).join('') + '</div></div>' + footer(c.id) + '</div>';
+    } else if (c.k === 'u4a') {
+      sayText = 'いい ときと わるい とき、どっちが おおい?';
+      h = topBar(true) + '<div class="main"><div class="card"><h1>いい ときと わるい とき、どっちが おおい?</h1><div class="opts">' +
+        C.U4A_OPTS.map(function (o) { return optBtn(o, false); }).join('') + '</div></div>' + footer(c.id) + '</div>';
+    } else if (c.k === 'sum') {
+      var lines = C.togetherText(exportData());
+      sayText = 'あなたの きもちの まとめ。' + lines.join('');
+      h = topBar(true) + '<div class="main"><div class="card"><div class="blk">きもちの まとめ</div>' +
+        '<h1>さいごまで こたえて くれて ありがとう。</h1>' +
+        '<p class="small" style="font-size:19px">おとうさん・おかあさんと いっしょに よんでね。</p>' +
+        '<ul class="lines">' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' +
+        '<button class="go" data-act="to-qr">おとうさんに わたす</button></div></div>';
+    } else if (c.k === 'qr') {
+      sayText = '';
+      h = '<div class="main adult"><div class="card"><div class="blk">おとうさん用の がめん</div>' +
+        '<h1 style="font-size:24px">スマホのカメラでQRコードを読み取ってください</h1><div id="qrbox" class="qr"><p class="small">暗号化しています…</p></div>' +
+        '<p class="small">読み取ると親用ページが開き、お父さんのスマホに保存された鍵で答えを読み解きます。この画面だけでは中身は読めません。</p>' +
+        '<details><summary class="small">読み取れないとき(文字列でわたす)</summary><code id="code"></code>' +
+        '<button class="iconbtn" data-act="copy" style="margin-top:8px">文字列をコピー</button></details>' +
+        '<button class="go" data-act="finish">読み取れたので、おわる</button>' +
+        '<div class="foot"><button data-act="back">まとめに もどる</button></div></div></div>';
+    } else if (c.k === 'end') {
+      sayText = 'ありがとう。おしまいです。';
+      h = '<div class="main"><div class="card msg"><div class="big">🌷</div><p>ありがとう。おしまいです。</p>' +
+        '<p class="small">こたえて くれた ゆうきに、ありがとう。</p></div></div>';
+    }
+    app.innerHTML = h;
+    if (c.k === 'qr') makeQR();
+  }
+
+  function renderNoSetup() {
+    app.innerHTML = '<div class="main adult"><div class="card"><h1 style="font-size:24px">まだ準備ができていません</h1>' +
+      '<p class="small">お父さんへ:親用ページで鍵を作り、表示された「iPad用の設定リンク」をこのiPadで開いてください。</p></div></div>';
+  }
+
+  // ---------- 書き出し ----------
+  function exportData() {
+    var shown = {}; C.shownList(S.a).forEach(function (q) { shown[q.id] = 1; });
+    var a = {}, u = {}, tm = {};
+    Object.keys(S.a).forEach(function (id) { if (shown[id]) a[id] = S.a[id]; });
+    Object.keys(S.u).forEach(function (id) { if (shown[id] && S.u[id].k !== undefined) u[id] = S.u[id]; });
+    Object.keys(S.tm).forEach(function (id) { if (shown[id]) tm[id] = S.tm[id]; });
+    return { v: 1, t: Date.now(), dur: Math.round((Date.now() - S.st) / 1000), a: a, u: u, sk: S.sk.filter(function (id) { return shown[id]; }), tm: tm };
+  }
+  var payloadStr = '';
+  function makeQR() {
+    var box = document.getElementById('qrbox');
+    C.encrypt(exportData(), lsGet(LS_PUB)).then(function (s) {
+      payloadStr = s;
+      var par = lsGet(LS_PAR) || '';
+      var url = par ? par + '#d=' + s : s;
+      document.getElementById('code').textContent = s;
+      try {
+        var qr = qrcode(0, 'L'); qr.addData(url, 'Byte'); qr.make();
+        box.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
+      } catch (e) {
+        box.innerHTML = '<p class="small">QRコードに入りきりませんでした。下の「文字列でわたす」を使ってください。</p>';
+      }
+    }).catch(function (e) {
+      box.innerHTML = '<p class="small">暗号化できませんでした(' + esc(e.message) + ')。https で開いているか確認してください。</p>';
+    });
+  }
+
+  // ---------- 操作 ----------
+  app.addEventListener('click', function (ev) {
+    var el = ev.target.closest('button'); if (!el) return;
+    var act = el.getAttribute('data-act'), c = cur();
+    if (act === 'say') return speak(sayText);
+    if (act === 'back') return back();
+    if (act === 'start') return push(nextFrom(-1));
+    if (act === 'resume') { S.stack.pop(); save(); return render(); }
+    if (act === 'restart') { S = fresh(); save(); return render(); }
+    if (act === 'block-go') { S.stack[S.stack.length - 1] = { k: 'q', id: c.then }; save(); return render(); }
+    if (act === 'dk') return dontKnow(c.id);
+    if (act === 'skip') return skip(c.id);
+    if (act === 'to-qr') return push({ k: 'qr' });
+    if (act === 'copy') { try { navigator.clipboard.writeText(payloadStr); el.textContent = 'コピーしました'; } catch (e) { } return; }
+    if (act === 'finish') { lsDel(LS_PROG); S = fresh(); S.stack = [{ k: 'end' }]; return render(); }
+
+    // 複数選択
+    var grid = el.closest('[data-multi]');
+    if (grid && el.classList.contains('opt')) {
+      el.classList.toggle('on');
+      var v = JSON.parse(el.getAttribute('data-v'));
+      // 「とくに ない」系は単独
+      var exclusive = ['none', 'nothing', 'any', 'noreason', 'all'];
+      var ons = grid.querySelectorAll('.opt.on');
+      if (el.classList.contains('on')) {
+        ons.forEach(function (b) {
+          var bv = JSON.parse(b.getAttribute('data-v'));
+          if (b !== el && (exclusive.indexOf(v) >= 0 || exclusive.indexOf(bv) >= 0)) b.classList.remove('on');
+        });
+      }
+      var go = app.querySelector('.go'); if (go) go.disabled = !grid.querySelector('.opt.on');
+      return;
+    }
+    if (act === 'multi-done' || act === 'u2a-done') {
+      var sel = [].map.call(app.querySelectorAll('[data-multi] .opt.on'), function (b) { return JSON.parse(b.getAttribute('data-v')); });
+      if (act === 'u2a-done') { S.u[c.id].body = sel; return push({ k: 'u2b', id: c.id }); }
+      if (c.k === 'u3' || c.k === 'u1' || c.k === 'u4b') { S.u[c.id].res = 1; return answer(c.id, sel, true); }
+      return answer(c.id, sel);
+    }
+    if (act === 'text-done') {
+      var t = (document.getElementById('txt').value || '').trim().slice(0, 200);
+      if (t) return answer(c.id, t); return skip(c.id);
+    }
+
+    // 1つ選ぶ
+    if (el.hasAttribute('data-v')) {
+      var val = JSON.parse(el.getAttribute('data-v'));
+      if (c.k === 'q') return answer(c.id, val);
+      if (c.k === 'u1' || c.k === 'u3' || c.k === 'u4b') { S.u[c.id].res = 1; return answer(c.id, val, true); }
+      if (c.k === 'u0') {
+        S.u[c.id] = { k: val };
+        var q = QI[c.id];
+        if (val === 'meaning') return push({ k: 'u1', id: c.id });
+        if (val === 'feel') return push({ k: 'u2a', id: c.id });
+        if (val === 'choose') {
+          if (q.t === 'one') return push({ k: 'u3', id: c.id });
+          if (q.t === 'yn') { S.a[c.id] = 0.5; return goNext(c.id); }
+          return push({ k: 'u1', id: c.id });
+        }
+        if (val === 'depends') return push({ k: 'u4a', id: c.id });
+        return goNext(c.id); // hard
+      }
+      if (c.k === 'u2b') {
+        S.u[c.id].face = val;
+        var sv = C.softValue(QI[c.id], val);
+        if (sv !== null) { S.a[c.id] = sv; S.u[c.id].soft = 1; }
+        return push({ k: 'u2c', id: c.id });
+      }
+      if (c.k === 'u2c') { S.u[c.id].word = val; return goNext(c.id); }
+      if (c.k === 'u4a') {
+        S.u[c.id].mostly = val;
+        var qq = QI[c.id];
+        if (qq.t === 'multi' || qq.t === 'one' || qq.t === 'text') return goNext(c.id);
+        return push({ k: 'u4b', id: c.id });
+      }
+    }
+  });
+
+  // ---------- 起動 ----------
+  var saved = lsGet(LS_PROG);
+  if (saved) {
+    try { S = JSON.parse(saved); } catch (e) { S = fresh(); }
+    if (S && S.stack && S.stack.length > 1 && cur().k !== 'end') S.stack.push({ k: 'resume' });
+    else S = fresh();
+  } else S = fresh();
+  if (window.__justSetup) {
+    app.innerHTML = '<div class="main adult"><div class="card msg"><div class="big">✅</div><p>設定できました</p>' +
+      '<p class="small">このiPadで答えを暗号化できるようになりました。</p><button class="go" id="ok">はじめの画面へ</button></div></div>';
+    document.getElementById('ok').onclick = function () { render(); };
+  } else render();
+})();
+</script>
+</body>
+</html>
