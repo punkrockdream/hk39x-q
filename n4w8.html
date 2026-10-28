@@ -2824,6 +2824,272 @@ var CORE = (function () {
     makeKeys: makeKeys, encrypt: encrypt, decrypt: decrypt, b64u: b64u, unb64u: unb64u, Y: Y, N: N, has: has
   };
 })();
+
+/* ===== 深掘り版(不安と眠り)のロジック。CORE の上に重ねる ===== */
+var CORE2 = (function (B) {
+  'use strict';
+  var Y = B.Y, N = B.N, has = B.has;
+  function inc(a, id, v) { if (!has(a, id)) return false; var x = a[id]; return Array.isArray(x) ? x.indexOf(v) >= 0 : x === v; }
+  function incAny(a, id, vs) { for (var i = 0; i < vs.length; i++) if (inc(a, id, vs[i])) return true; return false; }
+  function cnt(a, id, none) { if (!has(a, id)) return 0; var x = Array.isArray(a[id]) ? a[id] : [a[id]]; return x.filter(function (v) { return v !== none; }).length; }
+
+  var F5 = [{ v: 0, t: 'ない' }, { v: 1, t: 'たまに' }, { v: 2, t: 'ときどき' }, { v: 3, t: 'よく' }, { v: 4, t: 'ほぼ まいにち' }];
+  var BED = [{ v: 20.5, t: '9じ より まえ', i: '🌆' }, { v: 21.5, t: '9じ〜10じ', i: '🕘' }, { v: 22.5, t: '10じ〜11じ', i: '🕙' },
+    { v: 23.5, t: '11じ〜12じ', i: '🕚' }, { v: 24.5, t: '12じ〜1じ', i: '🕛' }, { v: 25.5, t: '1じ より あと', i: '🌌' }];
+
+  var Q = [
+    // ---- P ----
+    { id: 'P1', b: 'P', t: 'yn', bad: 0, q: 'さいきん、ほっと できる じかんは ある?', e: 'ゆっくり できる ときは ある?' },
+    { id: 'P2', b: 'P', t: 'one', q: '1にちの うちで、いちばん げんきな じかんは?', e: 'いつが いちばん げんき?', o: [
+      { v: 'am', t: 'あさ', i: '🌅' }, { v: 'noon', t: 'ひる', i: '☀️' }, { v: 'eve', t: 'ゆうがた', i: '🌇' }, { v: 'night', t: 'よる', i: '🌙' },
+      { v: 'same', t: 'ずっと おなじ', i: '➖' }, { v: 'none', t: 'ずっと げんきが ない', i: '🌫️' }] },
+    { id: 'P3', b: 'P', t: 'multi', q: 'ねる まえの すきな すごしかたは?', e: 'ねる まえ、なにを するのが すき?', o: [
+      { v: 'phone', t: 'スマホ・どうが', i: '📱' }, { v: 'book', t: 'ほん', i: '📖' }, { v: 'music', t: 'おんがく', i: '🎧' }, { v: 'game', t: 'ゲーム', i: '🎮' },
+      { v: 'bath', t: 'おふろ', i: '🛁' }, { v: 'talk', t: 'かぞくと はなす', i: '💬' }, { v: 'sleep', t: 'すぐ ねる', i: '😴' }] },
+
+    // ---- S1 ----
+    { id: 'S1_1', b: 'S1', t: 'one', q: 'がっこうが ある ひ、ねるのは なんじ ごろ?', e: 'がっこうの ひ、なんじに ねる?', o: BED },
+    { id: 'S1_2', b: 'S1', t: 'one', q: 'がっこうが ある ひ、おきるのは なんじ ごろ?', e: 'がっこうの ひ、なんじに おきる?', o: [
+      { v: 5.5, t: '6じ より まえ', i: '🌄' }, { v: 6.5, t: '6じ〜7じ', i: '🕕' }, { v: 7.5, t: '7じ〜8じ', i: '🕖' }, { v: 8.5, t: '8じ より あと', i: '🕗' }] },
+    { id: 'S1_3', b: 'S1', t: 'one', q: 'やすみの ひ、ねるのは なんじ ごろ?', e: 'やすみの ひ、なんじに ねる?', o: BED },
+    { id: 'S1_4', b: 'S1', t: 'one', q: 'やすみの ひ、おきるのは なんじ ごろ?', e: 'やすみの ひ、なんじに おきる?', o: [
+      { v: 6.5, t: '7じ より まえ', i: '🌄' }, { v: 8, t: '7じ〜9じ', i: '🕗' }, { v: 10, t: '9じ〜11じ', i: '🕙' }, { v: 12, t: '11じ〜1じ', i: '🕛' }, { v: 13.5, t: '1じ より あと', i: '☀️' }] },
+    { id: 'S1_5', b: 'S1', t: 'one', q: 'ふとんに はいってから、ねむるまで どのくらい?', e: 'ねるまで どのくらい かかる?', o: [
+      { v: 0, t: 'すぐ', i: '⚡' }, { v: 15, t: '15ふん くらい', i: '🕐' }, { v: 30, t: '30ぷん くらい', i: '🕑' }, { v: 60, t: '1じかん くらい', i: '🕒' }, { v: 90, t: 'もっと', i: '🌀' }] },
+
+    // ---- S2 ----
+    { id: 'S2_1', b: 'S2', t: 'yn', bad: 1, q: 'ふとんの なかで スマホを みる ことは ある?', e: 'ねる ときに スマホを みる?' },
+    { id: 'S2_1a', b: 'S2', t: 'freq', q: 'どのくらい ある?', e: 'どのくらい よく ある?', if: function (a) { return Y(a, 'S2_1'); } },
+    { id: 'S2_1b', b: 'S2', t: 'multi', q: 'なにを みる ことが おおい?', e: 'なにを みてる?', if: function (a) { return Y(a, 'S2_1'); }, o: [
+      { v: 'video', t: 'どうが', i: '📺' }, { v: 'sns', t: 'LINE・SNS', i: '💬' }, { v: 'game', t: 'ゲーム', i: '🎮' }, { v: 'music', t: 'おんがく', i: '🎧' }, { v: 'other', t: 'ほか', i: '✨' }] },
+    { id: 'S2_1c', b: 'S2', t: 'yn', bad: 1, q: 'みて いて、おもったより おそく なる ことは ある?', e: 'きづいたら よる おそく なってる?', if: function (a) { return Y(a, 'S2_1'); } },
+    { id: 'S2_2', b: 'S2', t: 'yn', bad: 1, q: 'ねる まえに、かんがえごとが とまらなく なる ことは ある?', e: 'ねる まえに、いろいろ かんがえちゃう?' },
+    { id: 'S2_2a', b: 'S2', t: 'freq', q: 'どのくらい ある?', e: 'どのくらい よく ある?', if: function (a) { return Y(a, 'S2_2'); } },
+    { id: 'S2_2b', b: 'S2', t: 'multi', q: 'なにを かんがえる ことが おおい?', e: 'どんな ことを かんがえる?', if: function (a) { return Y(a, 'S2_2'); }, o: [
+      { v: 'study', t: 'べんきょう・テスト', i: '📝' }, { v: 'friend', t: 'ともだち', i: '👥' }, { v: 'teacher', t: 'せんせい', i: '🧑‍🏫' }, { v: 'home', t: 'いえの こと', i: '🏠' },
+      { v: 'future', t: 'しょうらい', i: '🔭' }, { v: 'today', t: 'きょう あった こと', i: '🗓️' }, { v: 'body', t: 'からだの こと', i: '🫀' },
+      { v: 'tomorrow', t: 'あしたの がっこう', i: '🏫' }, { v: 'any', t: 'きまって ない', i: '🌀' }] },
+    { id: 'S2_3', b: 'S2', t: 'yn', bad: 1, q: 'ねむれない とき、「ねむれない」こと じたいが しんぱいに なる?', e: 'ねむれないと、もっと あせっちゃう?' },
+    { id: 'S2_4', b: 'S2', t: 'yn', bad: 0, q: 'ねる じかんは、じぶんで きめて いる?', e: 'ねる じかんは じぶんで きめてる?' },
+
+    // ---- S3 ----
+    { id: 'S3_1', b: 'S3', t: 'yn', bad: 1, q: 'よなかに めが さめる ことは ある?', e: 'よる、とちゅうで おきちゃう?' },
+    { id: 'S3_1a', b: 'S3', t: 'freq', q: 'どのくらい ある?', e: 'どのくらい よく ある?', if: function (a) { return Y(a, 'S3_1'); } },
+    { id: 'S3_1b', b: 'S3', t: 'yn', bad: 0, q: 'めが さめた あと、また すぐ ねむれる?', e: 'おきても すぐ また ねられる?', if: function (a) { return Y(a, 'S3_1'); } },
+    { id: 'S3_2', b: 'S3', t: 'yn', bad: 1, q: 'こわい ゆめを みる ことは おおい?', e: 'こわい ゆめを よく みる?' },
+    { id: 'S3_3', b: 'S3', t: 'one', q: 'ねて いる とき、いびきや、いきが とまって いると いわれた ことは ある?', e: 'ねてる とき「いびき かいてた」って いわれた?', o: [
+      { v: 'yes', t: 'ある', i: '💤' }, { v: 'no', t: 'ない', i: '🙅' }, { v: 'unk', t: 'いわれた ことが ない・わからない', i: '❔' }] },
+    { id: 'S3_4', b: 'S3', t: 'one', q: 'あさ おきる とき、いちばん たいへんなのは?', e: 'おきる とき、なにが いちばん つらい?', o: [
+      { v: 'body', t: 'からだが おもい・おきあがれない', i: '🪨' }, { v: 'sleepy', t: 'とにかく ねむい', i: '😪' }, { v: 'mood', t: 'きもちが おもい', i: '🌧️' },
+      { v: 'pain', t: 'あたまや おなかが いたい', i: '🤕' }, { v: 'dizzy', t: 'くらくら する', i: '💫' }, { v: 'none', t: 'とくに ない', i: '🙆' }] },
+    { id: 'S3_5', b: 'S3', t: 'yn', bad: 0, q: 'やすみの ひの あさは、すっきり おきられる?', e: 'やすみの ひは、ぱっと おきられる?' },
+
+    // ---- S4 ----
+    { id: 'S4_1', b: 'S4', t: 'freq', q: 'じゅぎょう ちゅうに ねむく なる ことは ある?', e: 'じゅぎょうで ねむく なる?', o: F5 },
+    { id: 'S4_2', b: 'S4', t: 'freq', q: 'ゆうがたに ねて しまう ことは ある?', e: 'ゆうがた、ねちゃう ことは ある?', o: F5 },
+    { id: 'S4_3', b: 'S4', t: 'multi', q: 'よく ある からだの ことを えらんでね(1)', e: 'よく ある ものは どれ?(1)', o: [
+      { v: 'od1', t: 'たちあがると くらっと する', i: '💫' }, { v: 'od2', t: 'たって いると きぶんが わるく なる', i: '🧍' },
+      { v: 'od3', t: 'おふろや いやな ことで きぶんが わるく なる', i: '🛁' }, { v: 'od4', t: 'すこし うごくと どきどき・いきが きれる', i: '💓' },
+      { v: 'od5', t: 'あさ おきられず、ごぜんちゅうは ちょうしが わるい', i: '🌅' }, { v: 'none', t: 'とくに ない', i: '🙆' }] },
+    { id: 'S4_4', b: 'S4', t: 'multi', q: 'よく ある からだの ことを えらんでね(2)', e: 'よく ある ものは どれ?(2)', o: [
+      { v: 'od7', t: 'しょくよくが ない', i: '🍽️' }, { v: 'od8', t: 'おへその まわりが いたく なる', i: '🫃' }, { v: 'od9', t: 'つかれやすい', i: '🥱' },
+      { v: 'od10', t: 'あたまが いたい', i: '🤕' }, { v: 'od11', t: 'のりものに よいやすい', i: '🚌' }, { v: 'none', t: 'とくに ない', i: '🙆' }] },
+    { id: 'S4_5', b: 'S4', t: 'one', q: '1にちの なかで、からだの ちょうしは かわる?', e: 'あさと よるで ちょうしは ちがう?', o: [
+      { v: 'am', t: 'あさが わるくて、ごごから よく なる', i: '🌤️' }, { v: 'night', t: 'よるに げんきに なる', i: '🌙' },
+      { v: 'same', t: 'ずっと おなじ', i: '➖' }, { v: 'day', t: 'ひに よって ちがう', i: '🎲' }] },
+
+    // ---- A ----
+    { id: 'A1', b: 'A', t: 'yn', bad: 1, q: 'しんぱいごとが おおい ほうだと おもう?', e: 'よく しんぱい する ほう?' },
+    { id: 'A1a', b: 'A', t: 'int', q: 'どのくらい おおい?', e: 'しんぱいは どのくらい?', if: function (a) { return Y(a, 'A1'); } },
+    { id: 'A1b', b: 'A', t: 'multi', q: 'なにが しんぱい?', e: 'どんな ことが しんぱい?', if: function (a) { return Y(a, 'A1'); }, o: [
+      { v: 'study', t: 'テスト・せいせき', i: '📝' }, { v: 'eyes', t: 'ひとに どう おもわれるか', i: '👀' }, { v: 'friend', t: 'ともだち', i: '👥' },
+      { v: 'teacher', t: 'せんせい', i: '🧑‍🏫' }, { v: 'home', t: 'いえの こと', i: '🏠' }, { v: 'future', t: 'しょうらい', i: '🔭' },
+      { v: 'body', t: 'からだ・びょうき', i: '🫀' }, { v: 'scold', t: 'おこられる こと', i: '💢' }, { v: 'school', t: 'がっこうに いく こと', i: '🏫' },
+      { v: 'any', t: 'きまって ない', i: '🌀' }] },
+    { id: 'A1c', b: 'A', t: 'yn', bad: 1, q: 'しんぱいを とめたいのに、とめられない ことは ある?', e: 'しんぱいが ずっと きえない?', if: function (a) { return Y(a, 'A1'); } },
+    { id: 'A2', b: 'A', t: 'yn', bad: 1, q: 'みんなの まえで はなしたり、みられたり するのは こわい?', e: 'ひとの まえは こわい?' },
+    { id: 'A2a', b: 'A', t: 'int', q: 'どのくらい こわい?', e: 'こわさは どのくらい?', if: function (a) { return Y(a, 'A2'); } },
+    { id: 'A3', b: 'A', t: 'yn', bad: 0, q: 'はじめての ひとと はなすのは へいき?', e: 'しらない ひとと はなしても だいじょうぶ?' },
+    { id: 'A4', b: 'A', t: 'yn', bad: 1, q: 'きゅうに どきどき したり、いきが くるしく なったり、こわく なったり する ことは ある?', e: 'きゅうに こわく なって、どきどき する ことは ある?' },
+    { id: 'A4a', b: 'A', t: 'freq', q: 'どのくらい ある?', e: 'どのくらい よく ある?', if: function (a) { return Y(a, 'A4'); } },
+    { id: 'A4b', b: 'A', t: 'multi', q: 'どこで おきる ことが おおい?', e: 'どこで そう なる?', if: function (a) { return Y(a, 'A4'); }, o: [
+      { v: 'home', t: 'いえ', i: '🏠' }, { v: 'school', t: 'がっこう', i: '🏫' }, { v: 'road', t: 'がっこうへの みち', i: '🚶' },
+      { v: 'crowd', t: 'ひとが おおい ところ', i: '👥' }, { v: 'ride', t: 'のりもの', i: '🚃' }, { v: 'any', t: 'きまって ない', i: '🌀' }] },
+    { id: 'A5', b: 'A', t: 'yn', bad: 1, q: 'がっこうの ことを かんがえると、あたまや おなかが いたく なる?', e: 'がっこうの ことで からだが いたく なる?' },
+    { id: 'A6', b: 'A', t: 'yn', bad: 1, q: 'がっこうが ある ひの まえの よるは、しんぱいに なる?', e: 'がっこうの まえの よる、いやな きもちに なる?' },
+    { id: 'A6a', b: 'A', t: 'int', q: 'どのくらい?', e: 'しんぱいは どのくらい?', if: function (a) { return Y(a, 'A6'); } },
+    { id: 'A7', b: 'A', t: 'yn', bad: 1, q: 'かぞくと はなれて いる とき、かぞくの ことが しんぱいに なる?', e: 'かぞくが いない とき、かぞくが しんぱい?' },
+    { id: 'A8', b: 'A', t: 'yn', bad: 1, q: 'なんかいも たしかめないと、きが すまない ことは ある?', e: 'なんども たしかめちゃう ことは ある?' },
+    { id: 'A9', b: 'A', t: 'multi', q: 'そわそわ する とき、すこし らくに なる ことは?', e: 'なにを すると おちつく?', o: [
+      { v: 'sleep', t: 'ねる', i: '😴' }, { v: 'phone', t: 'スマホ', i: '📱' }, { v: 'music', t: 'おんがく', i: '🎧' }, { v: 'book', t: 'ほん', i: '📖' },
+      { v: 'talk', t: 'だれかと はなす', i: '💬' }, { v: 'move', t: 'からだを うごかす', i: '🏃' }, { v: 'alone', t: 'ひとりに なる', i: '🧘' }, { v: 'none', t: 'とくに ない', i: '・' }] },
+
+    // ---- M ----
+    { id: 'M1', b: 'M', t: 'yn', bad: 1, q: 'きもちが しずんで いる とき、すきな ことを しても たのしくない?', e: 'かなしい とき、すきな ことも たのしくない?' },
+    { id: 'M2', b: 'M', t: 'one', q: 'しずむのは、1にちの いつが おおい?', e: 'いつ かなしく なる?', o: [
+      { v: 'am', t: 'あさ', i: '🌅' }, { v: 'school', t: 'がっこうに いる とき', i: '🏫' }, { v: 'eve', t: 'ゆうがた', i: '🌇' }, { v: 'night', t: 'よる', i: '🌙' },
+      { v: 'holiday', t: 'やすみの ひ', i: '🏠' }, { v: 'any', t: 'きまって ない', i: '🌀' }, { v: 'never', t: 'しずむ ことは ない', i: '🙆' }] },
+    { id: 'M3', b: 'M', t: 'one', q: 'そう なったのは、いつごろ から?', e: 'いつから そう なった?', if: function (a) { return !inc(a, 'M2', 'never'); }, o: [
+      { v: 'recent', t: 'さいきん', i: '🆕' }, { v: 'summer', t: 'なつやすみ ごろ', i: '🌻' }, { v: 'jh', t: 'ちゅうがくに はいってから', i: '🏫' },
+      { v: 'es', t: 'しょうがっこうの ころ', i: '🎒' }, { v: 'forget', t: 'おぼえて ない', i: '❔' }] }
+  ];
+  // E3 と深掘りは前回と同じものを使う
+  ['E3', 'E3_1', 'E3_2', 'E3_3', 'E3_4', 'E3_5', 'E3_5a', 'E3_6', 'E3_6a', 'E3_7', 'E3_8'].forEach(function (id) {
+    var o = B.QI[id], c = {}; Object.keys(o).forEach(function (k) { if (k !== 'idx') c[k] = o[k]; }); c.b = 'M'; Q.push(c);
+  });
+  Q.push(
+    { id: 'G1', b: 'G', t: 'one', dyn: true, q: 'きょう こたえた なかで、いちばん こまって いるのは?', e: 'いちばん こまって いるのは どれ?' },
+    { id: 'G2', b: 'G', t: 'one', q: 'もし まいにち ぐっすり ねむれたら、なにが かわりそう?', e: 'よく ねむれたら、なにが かわる?', o: [
+      { v: 'morning', t: 'あさが らくに なる', i: '🌅' }, { v: 'school', t: 'がっこうに いきやすく なる', i: '🏫' }, { v: 'mood', t: 'きもちが らくに なる', i: '🌤️' },
+      { v: 'same', t: 'あまり かわらない', i: '➖' }, { v: 'unk', t: 'わからない', i: '❔' }] },
+    { id: 'G3', b: 'G', t: 'multi', q: 'あったら たすかる ものは?', e: 'あると うれしい ことは?', o: [
+      { v: 'phonebox', t: 'ねる まえに スマホを おいて おく ばしょ', i: '📦' }, { v: 'call', t: 'あさの こえかけ', i: '📣' }, { v: 'doctor', t: 'びょういんで からだを しらべる', i: '🏥' },
+      { v: 'listen', t: 'はなしを きいて もらう', i: '👂' }, { v: 'rest', t: 'すこし やすむ じかん', i: '🛌' }, { v: 'study', t: 'べんきょうの てつだい', i: '✏️' }, { v: 'none', t: 'とくに ない', i: '・' }] },
+    { id: 'G4', b: 'G', t: 'text', q: 'ほかに かきたい ことが あれば、かいてね。なにも かかなくても だいじょうぶ。', e: 'かきたい ことが あれば どうぞ。' }
+  );
+  var QI = {}; Q.forEach(function (q, i) { q.idx = i; QI[q.id] = q; });
+
+  var BLOCKS = [
+    { k: 'P', i: '🌱', name: 'まずは かんたんな しつもん', msg: 'きょうは ねむりと きもちの ことを きくね。ゆっくりで だいじょうぶ。' },
+    { k: 'S1', i: '🛏️', name: 'ねる じかんと おきる じかん', msg: 'まずは ねる じかんと おきる じかん。だいたいで いいよ。' },
+    { k: 'S2', i: '🌙', name: 'ねる まえの こと', msg: 'つぎは ねる まえの こと。どんな こたえでも おこらないよ。' },
+    { k: 'S3', i: '🌅', name: 'よなかと あさ', msg: 'いい ちょうし。つぎは よなかと あさの こと。' },
+    { k: 'S4', i: '☀️', name: 'ひるまと からだ', msg: 'はんぶん すぎたよ。ありがとう。' },
+    { k: 'A', i: '🌀', name: 'しんぱいの こと', msg: 'つぎは しんぱいの こと。わからない ときは 「わからない」で だいじょうぶ。' },
+    { k: 'M', i: '💭', name: 'きもちの こと', msg: 'あと すこし。ここまで ほんとうに ありがとう。' },
+    { k: 'G', i: '⭐', name: 'さいごの しつもん', msg: 'さいごの しつもんだよ。' }
+  ];
+
+  var G1_CAND = [
+    { v: 'late', t: 'よる おそくまで おきちゃう', i: '🌌', when: function (a) { return (a.S1_1 || 0) >= 23.5 || Y(a, 'S2_1c'); } },
+    { v: 'fall', t: 'なかなか ねむれない', i: '🌀', when: function (a) { return (a.S1_5 || 0) >= 30; } },
+    { v: 'think', t: 'ねる まえの かんがえごと', i: '💭', when: function (a) { return Y(a, 'S2_2'); } },
+    { v: 'wake', t: 'よなかに おきちゃう', i: '🌃', when: function (a) { return Y(a, 'S3_1'); } },
+    { v: 'morning', t: 'あさ おきるのが つらい', i: '🌅', when: function (a) { return has(a, 'S3_4') && !inc(a, 'S3_4', 'none'); } },
+    { v: 'sleepy', t: 'ひるま ねむい', i: '😪', when: function (a) { return (a.S4_1 || 0) >= 2; } },
+    { v: 'body', t: 'からだの ちょうし', i: '🤕', when: function (a) { return cnt(a, 'S4_3', 'none') + cnt(a, 'S4_4', 'none') >= 1; } },
+    { v: 'worry', t: 'しんぱいごと', i: '🌀', when: function (a) { return Y(a, 'A1'); } },
+    { v: 'people', t: 'ひとの まえ', i: '👀', when: function (a) { return Y(a, 'A2'); } },
+    { v: 'panic', t: 'きゅうに こわく なる こと', i: '💓', when: function (a) { return Y(a, 'A4'); } },
+    { v: 'school', t: 'がっこうの まえの よる', i: '🏫', when: function (a) { return Y(a, 'A6') || Y(a, 'A5'); } },
+    { v: 'mood', t: 'きもちが しずむ こと', i: '🌧️', when: function (a) { return Y(a, 'M1') || (has(a, 'M2') && !incAny(a, 'M2', ['never'])); } }
+  ];
+  function g1Options(a) {
+    var o = G1_CAND.filter(function (c) { return c.when(a); }).map(function (c) { return { v: c.v, t: c.t, i: c.i }; });
+    if (o.length < 2) return null;
+    o.push({ v: 'other', t: 'このなかには ない', i: '・' });
+    return o;
+  }
+  var YN = [{ v: 1, t: 'はい' }, { v: 0, t: 'いいえ' }];
+  var FREQ = [{ v: 1, t: 'たまに' }, { v: 2, t: 'ときどき' }, { v: 3, t: 'よく' }, { v: 4, t: 'ほぼ まいにち' }];
+  function optionsOf(q, a) {
+    if (q.dyn) return g1Options(a) || [];
+    if (q.o) return q.o;
+    if (q.t === 'yn') return YN;
+    if (q.t === 'freq') return FREQ;
+    return null;
+  }
+  function visible(q, a) { if (q.dyn) return !!g1Options(a); return !q.if || q.if(a); }
+  function shownList(a) { return Q.filter(function (q) { return visible(q, a); }); }
+  function optText(q, v, a) {
+    var o = optionsOf(q, a || {}) || [], arr = Array.isArray(v) ? v : [v];
+    return arr.map(function (x) { var f = o.filter(function (y) { return y.v === x; })[0]; return f ? f.t : String(x); });
+  }
+  function answerText(q, v, a) {
+    if (v === undefined || v === null) return '';
+    if (q.t === 'yn') { if (v === 1) return 'はい'; if (v === 0) return 'いいえ'; return 'どちらとも(' + v + ')'; }
+    if (q.t === 'int' || q.t === 'pint') return B.INT_LABELS[v] || String(v);
+    if (q.t === 'lvl') return (q.labels && q.labels[v]) || String(v);
+    if (q.t === 'text') return String(v);
+    return optText(q, v, a).join('、');
+  }
+
+  // ---------- 分析 ----------
+  var OD_NAMES = { od1: '立ちくらみ', od2: '立っていると気分不良', od3: '入浴・嫌なことで気分不良', od4: '動悸・息切れ', od5: '朝起きられず午前中不調',
+    od6: '顔色が青白い(親が確認)', od7: '食欲不振', od8: 'へその周りの痛み', od9: '疲れやすい', od10: '頭痛', od11: '乗り物酔い' };
+  function hrs(x) { var h = Math.floor(x), m = Math.round((x - h) * 60); return h + '時間' + (m ? m + '分' : ''); }
+
+  function analyze(data) {
+    var a = data.a, ind = {}, notes = [];
+    function n(id) { return typeof a[id] === 'number' ? a[id] : null; }
+    var wb = n('S1_1'), ww = n('S1_2'), hb = n('S1_3'), hw = n('S1_4');
+    if (wb !== null && ww !== null) ind.wdSleep = ww + 24 - wb;
+    if (hb !== null && hw !== null) ind.hdSleep = hw + 24 - hb;
+    if (wb !== null && ww !== null && hb !== null && hw !== null) ind.jet = ((hb + hw + 24) / 2) - ((wb + ww + 24) / 2);
+    ind.latency = n('S1_5');
+    var odSel = [];
+    ['S4_3', 'S4_4'].forEach(function (id) { if (Array.isArray(a[id])) a[id].forEach(function (v) { if (v !== 'none') odSel.push(v); }); });
+    if (data.pale) odSel.push('od6');
+    ind.od = odSel; ind.odCount = odSel.length;
+
+    function H(key, name, items, next) {
+      var hit = items.filter(function (x) { return x[1]; });
+      var asked = items.filter(function (x) { return x[1] !== null; });
+      return { k: key, n: name, hit: hit.map(function (x) { return x[0]; }), score: hit.length, asked: asked.length, next: next };
+    }
+    function yv(id) { return has(a, id) && typeof a[id] === 'number' ? a[id] >= 0.5 : null; }
+    function nv(id) { return has(a, id) && typeof a[id] === 'number' ? a[id] < 0.5 : null; }
+    function ge(id, x) { return typeof a[id] === 'number' ? a[id] >= x : null; }
+    function is(id, vs) { return has(a, id) ? incAny(a, id, vs) : null; }
+
+    var hyp = [
+      H('short', '寝る時間が遅い・睡眠が足りない', [
+        ['平日の睡眠が8時間未満' + (ind.wdSleep !== undefined ? '(約' + hrs(ind.wdSleep) + ')' : ''), ind.wdSleep !== undefined ? ind.wdSleep < 8 : null],
+        ['休日に2時間以上ずれる' + (ind.jet !== undefined ? '(約' + hrs(Math.max(0, ind.jet)) + ')' : ''), ind.jet !== undefined ? ind.jet >= 2 : null],
+        ['布団でスマホを見る', yv('S2_1')], ['見ていて遅くなる', yv('S2_1c')],
+        ['朝いちばん大変なのは「とにかく眠い」', is('S3_4', ['sleepy'])], ['授業中に眠くなる(よく以上)', ge('S4_1', 3)], ['夕方に寝てしまう(ときどき以上)', ge('S4_2', 2)]
+      ], '寝る時刻とスマホを置く場所を、本人と一緒に決める。責めずに「朝を楽にするため」と伝える。'),
+      H('worry_sleep', '寝る前の心配で寝つけない', [
+        ['寝つくまで30分以上', ge('S1_5', 30)], ['寝る前に考えごとが止まらない', yv('S2_2')], ['それが「よく」以上', ge('S2_2a', 3)],
+        ['眠れないこと自体が心配', yv('S2_3')], ['夜中に起きると、また眠れない', nv('S3_1b')], ['怖い夢が多い', yv('S3_2')]
+      ], '寝る前に考えている中身を手がかりに、エールや医療機関で不安と眠りについて相談する。'),
+      H('od', '起立性調節障害など体の不調', [
+        ['診断基準の身体症状が3つ以上(' + ind.odCount + '個)', ind.odCount >= 3],
+        ['朝が悪く、午後から良くなる', is('S4_5', ['am'])], ['朝いちばん大変なのは体(重い・痛い・くらくら)', is('S3_4', ['body', 'pain', 'dizzy'])],
+        ['休日の朝もすっきり起きられない', nv('S3_5')], ['元気なのは夕方か夜', is('P2', ['eve', 'night'])]
+      ], '小児科で「起立性調節障害が心配」と伝え、新起立試験を受ける。'),
+      H('anxiety', '心配ごとが多くて強い', [
+        ['心配ごとが多いほう', yv('A1')], ['心配の強さが「けっこう」以上', ge('A1a', 2)], ['心配を止められない', yv('A1c')],
+        ['心配の中身が3つ以上', has(a, 'A1b') ? cnt(a, 'A1b', 'any') >= 3 : null], ['人前が怖い', yv('A2')], ['急などきどき・息苦しさ', yv('A4')],
+        ['学校のことで頭やおなかが痛くなる', yv('A5')], ['学校の前の夜に心配になる', yv('A6')]
+      ], 'エールか児童精神科で、不安について相談する。心配の中身の一覧を持っていく。'),
+      H('mood', '気分の落ち込みが中心', [
+        ['好きなことをしても楽しくない', yv('M1')], ['ずっと元気がない', is('P2', ['none'])], ['ほっとできる時間がない', nv('P1')],
+        ['ぐっすり眠れても「あまり変わらない」', is('G2', ['same'])], ['沈むのが最近から', is('M3', ['recent', 'summer'])]
+      ], '早めに児童精神科か小児科で相談する。特に「楽しくない」が「はい」なら優先して。')
+    ];
+    hyp.sort(function (x, y) { return (y.score / Math.max(y.asked, 1)) - (x.score / Math.max(x.asked, 1)) || y.score - x.score; });
+
+    if (inc(a, 'S3_3', 'yes')) notes.push('いびきや無呼吸を指摘されたことがある。睡眠時無呼吸の可能性があるので、これだけで小児科か耳鼻科の受診をすすめます。');
+    if (ind.odCount >= 3) notes.push('起立性調節障害の身体症状が' + ind.odCount + '個(3個以上が受診の目安)。');
+    if (Y(a, 'M1')) notes.push('好きなことも楽しめない、という答えがあります。うつのサインのひとつなので、早めの相談をすすめます。');
+    if (Y(a, 'A8')) notes.push('何回も確かめないと気がすまない、という答えがあります。相談のときに伝えてください。');
+    return { ind: ind, hyp: hyp, notes: notes, e3: B.e3Level(a), odNames: OD_NAMES, hrs: hrs };
+  }
+
+  function joinJa(arr) { if (!arr.length) return ''; if (arr.length === 1) return arr[0]; return arr.slice(0, -1).join('、') + 'や ' + arr[arr.length - 1]; }
+  function togetherText(data) {
+    var a = data.a, L = [];
+    if (Y(a, 'P1')) L.push('ほっと できる じかんが ある。');
+    if (has(a, 'P2') && !inc(a, 'P2', 'none')) L.push('いちばん げんきなのは 「' + optText(QI.P2, a.P2)[0] + '」。');
+    if (has(a, 'A9') && !inc(a, 'A9', 'none')) L.push('そわそわ する ときは ' + joinJa(optText(QI.A9, a.A9)) + 'で すこし らくに なる。');
+    if (has(a, 'S1_1')) L.push('がっこうの ひは 「' + optText(QI.S1_1, a.S1_1)[0] + '」に ねて、「' + optText(QI.S1_2, a.S1_2)[0] + '」に おきて いる。');
+    if (has(a, 'S1_5') && a.S1_5 >= 30) L.push('ねむるまで 「' + optText(QI.S1_5, a.S1_5)[0] + '」 かかる。');
+    if (Y(a, 'S2_2') && has(a, 'S2_2b')) L.push('ねる まえに ' + joinJa(optText(QI.S2_2b, a.S2_2b)) + 'の ことを かんがえる ことが ある。');
+    if (has(a, 'S3_4') && !inc(a, 'S3_4', 'none')) L.push('あさ いちばん たいへんなのは 「' + optText(QI.S3_4, a.S3_4)[0] + '」。');
+    if (Y(a, 'A1') && has(a, 'A1b')) L.push('しんぱいなのは ' + joinJa(optText(QI.A1b, a.A1b)) + '。');
+    if (has(a, 'G1') && !inc(a, 'G1', 'other')) L.push('いま いちばん こまって いるのは 「' + optText(QI.G1, a.G1, a)[0] + '」。');
+    if (has(a, 'G3') && !inc(a, 'G3', 'none')) L.push(joinJa(optText(QI.G3, a.G3)) + 'が あると たすかる。');
+    L.push('ここまで しょうじきに こたえて くれて、ありがとう。');
+    return L;
+  }
+
+  var out = {}; Object.keys(B).forEach(function (k) { out[k] = B[k]; });
+  out.KIND = 's2'; out.PROG_KEY = 'qv2_prog';
+  out.Q = Q; out.QI = QI; out.BLOCKS = BLOCKS; out.optionsOf = optionsOf; out.visible = visible; out.shownList = shownList;
+  out.optText = optText; out.answerText = answerText; out.togetherText = togetherText; out.analyze = analyze;
+  return out;
+})(CORE);
 </script>
 <script>(function () {
   'use strict';
@@ -2881,7 +3147,7 @@ var CORE = (function () {
       '<div class="card"><p>iPadに出たQRコードをこのスマホのカメラで読み取ると、ここに結果が出ます。</p>' +
       '<details><summary class="sub">文字列を貼り付けて読み解く</summary><textarea id="paste" rows="4"></textarea><div class="row" style="margin-top:8px"><button class="pri" id="dec">読み解く</button></div></details></div>' +
       '<div class="card"><h2>これまでの回答</h2>' + (h.length ? '<table>' + h.map(function (d, i) {
-        return '<tr><td>' + fmtDate(d.t) + '</td><td><button data-i="' + i + '">開く</button></td></tr>';
+        return '<tr><td>' + fmtDate(d.t) + '</td><td>' + (d.k === 's2' ? '不安と眠り' : 'はじめの質問') + '</td><td><button data-i="' + i + '">開く</button></td></tr>';
       }).reverse().join('') + '</table>' : '<p class="sub">まだありません</p>') + '</div>' +
       '<div class="row"><button id="key">鍵の情報・iPadの設定</button></div>';
     var dec = document.getElementById('dec');
@@ -3000,6 +3266,7 @@ var CORE = (function () {
   }
 
   function renderResult(data) {
+    if (data.k === 's2') return renderResult2(data);
     var sc = C.score(data), a = data.a, lv = C.e3Level(a), pt = C.patterns(a, sc), pv = prevOf(data);
     var pvsc = pv ? C.score(pv) : null;
     var lines = C.togetherText(data);
@@ -3024,6 +3291,104 @@ var CORE = (function () {
     document.getElementById('print').onclick = function () { window.print(); };
     var p2 = document.getElementById('print2'); if (p2) p2.onclick = function () { window.print(); };
     document.getElementById('chat').onclick = function () { navigator.clipboard.writeText(chatText(data)); this.textContent = 'コピーしました'; };
+    window.scrollTo(0, 0);
+  }
+
+
+  // ---------- 深掘り版(不安と眠り) ----------
+  function saveHist(data) {
+    var h = hist(); for (var i = 0; i < h.length; i++) if (h[i].t === data.t) h[i] = data; lsSet(LS_HIST, JSON.stringify(h));
+  }
+  function chatText2(data) {
+    var C2 = CORE2, a = data.a, an = C2.analyze(data), L = [];
+    L.push('【不安と眠り 深掘り版の結果】' + fmtDate(data.t) + ' 所要' + Math.round(data.dur / 60) + '分');
+    L.push('E3:' + an.e3.t);
+    if (an.ind.wdSleep !== undefined) L.push('平日の睡眠 約' + an.hrs(an.ind.wdSleep));
+    if (an.ind.hdSleep !== undefined) L.push('休日の睡眠 約' + an.hrs(an.ind.hdSleep));
+    if (an.ind.jet !== undefined) L.push('平日と休日のずれ 約' + an.hrs(Math.max(0, an.ind.jet)));
+    L.push('起立性調節障害の身体症状 ' + an.ind.odCount + '個:' + an.ind.od.map(function (x) { return an.odNames[x]; }).join('、'));
+    L.push('見立て(当てはまった数/判断できた数):');
+    an.hyp.forEach(function (h) { L.push('  ' + h.n + ' ' + h.score + '/' + h.asked + (h.hit.length ? '(' + h.hit.join('、') + ')' : '')); });
+    an.notes.forEach(function (n) { L.push('注意:' + n); });
+    L.push('全回答:');
+    C2.shownList(a).forEach(function (q) {
+      var v = C2.has(a, q.id) ? C2.answerText(q, a[q.id], a) : (data.u && data.u[q.id] ? 'わからない' : '—');
+      L.push('  ' + q.id + ' ' + q.q + ' → ' + v + (data.tm && data.tm[q.id] ? '(' + data.tm[q.id] + '秒)' : ''));
+    });
+    Object.keys(data.u || {}).forEach(function (id) { L.push('  [わからない詳細] ' + id + ' ' + JSON.stringify(data.u[id])); });
+    return L.join('\n');
+  }
+  function allAnswers2(data) {
+    var C2 = CORE2, a = data.a;
+    return '<table>' + C2.shownList(a).map(function (q) {
+      var v = C2.has(a, q.id) ? C2.answerText(q, a[q.id], a) : (data.u && data.u[q.id] ? '(わからない)' : ((data.sk || []).indexOf(q.id) >= 0 ? '(とばす)' : '—'));
+      return '<tr><td class="sub">' + q.id + '</td><td>' + esc(q.q) + '</td><td><b>' + esc(v) + '</b></td></tr>';
+    }).join('') + '</table>';
+  }
+  function e3Block2(data) {
+    var a = data.a, lv = CORE.e3Level(a);
+    if (lv.lv === 'none') return '';
+    if (lv.lv === 'unanswered') return '<div class="card alert watch"><h2>E3(消えたい気持ち)</h2><p>この質問には答えていません。答えなかったこと自体も大事な情報です。相談のときに伝えてください。</p></div>';
+    var ids = ['E3', 'E3_1', 'E3_2', 'E3_3', 'E3_4', 'E3_5', 'E3_5a', 'E3_6', 'E3_6a', 'E3_7', 'E3_8'];
+    return '<div class="card alert ' + lv.lv + '"><h2>E3:' + esc(lv.t) + '</h2><p>' + esc(lv.act) + '</p><table>' +
+      ids.filter(function (id) { return CORE.has(a, id); }).map(function (id) { return '<tr><td>' + esc(CORE.QI[id].q) + '</td><td><b>' + esc(CORE.answerText(CORE.QI[id], a[id], a)) + '</b></td></tr>'; }).join('') +
+      '</table><p class="sub">この内容は、一緒に読む文章には入っていません。</p></div>';
+  }
+  function body2(data, forSheet) {
+    var C2 = CORE2, a = data.a, an = C2.analyze(data), ind = an.ind;
+    function rowv(label, id) { return C2.has(a, id) ? '<tr><td>' + label + '</td><td><b>' + esc(C2.answerText(C2.QI[id], a[id], a)) + '</b></td></tr>' : ''; }
+    var sleep = '<table>' +
+      (ind.wdSleep !== undefined ? '<tr><td>平日の睡眠時間</td><td><b>約' + an.hrs(ind.wdSleep) + '</b>' + (ind.wdSleep < 8 ? ' <span class="tag">8時間未満</span>' : '') + '</td></tr>' : '') +
+      (ind.hdSleep !== undefined ? '<tr><td>休日の睡眠時間</td><td><b>約' + an.hrs(ind.hdSleep) + '</b></td></tr>' : '') +
+      (ind.jet !== undefined ? '<tr><td>平日と休日のずれ</td><td><b>約' + an.hrs(Math.max(0, ind.jet)) + '</b>' + (ind.jet >= 2 ? ' <span class="tag">2時間以上</span>' : '') + '</td></tr>' : '') +
+      rowv('寝つくまで', 'S1_5') + rowv('布団でスマホ', 'S2_1') + rowv('その頻度', 'S2_1a') + rowv('見ているもの', 'S2_1b') + rowv('見ていて遅くなる', 'S2_1c') +
+      rowv('寝る前に考えが止まらない', 'S2_2') + rowv('その頻度', 'S2_2a') + rowv('寝る前に考えること', 'S2_2b') + rowv('眠れないこと自体が心配', 'S2_3') +
+      rowv('夜中に目がさめる', 'S3_1') + rowv('また眠れる', 'S3_1b') + rowv('こわい夢が多い', 'S3_2') + rowv('いびき・無呼吸の指摘', 'S3_3') +
+      rowv('朝いちばん大変なこと', 'S3_4') + rowv('休日の朝はすっきり起きられる', 'S3_5') + rowv('授業中に眠くなる', 'S4_1') + rowv('夕方に寝てしまう', 'S4_2') + '</table>';
+    var worry = '<table>' + rowv('心配ごとが多いほう', 'A1') + rowv('心配の強さ', 'A1a') + rowv('心配の中身', 'A1b') + rowv('心配を止められない', 'A1c') +
+      rowv('人前が怖い', 'A2') + rowv('はじめての人と話すのは平気', 'A3') + rowv('急などきどき・息苦しさ', 'A4') + rowv('その場所', 'A4b') +
+      rowv('学校のことで頭やおなかが痛くなる', 'A5') + rowv('学校の前の夜に心配', 'A6') + rowv('家族が心配になる', 'A7') + rowv('何回も確かめないと気がすまない', 'A8') +
+      rowv('そわそわするとき楽になること', 'A9') + rowv('好きなことも楽しくない', 'M1') + rowv('沈むのはいつ', 'M2') + rowv('いつごろから', 'M3') + '</table>';
+    var od = '<p>' + ind.odCount + '個(3個以上が受診の目安)</p><ul>' + Object.keys(an.odNames).map(function (k) {
+      var on = ind.od.indexOf(k) >= 0;
+      if (k === 'od6' && !forSheet) return '<li><label><input type="checkbox" id="pale"' + (data.pale ? ' checked' : '') + ' style="width:auto"> 顔色が青白い(お父さん・お母さんが見て判断)</label></li>';
+      return '<li' + (on ? '' : ' class="sub"') + '>' + (on ? '✔ ' : '・') + esc(an.odNames[k]) + '</li>';
+    }).join('') + '</ul>' + (C2.has(a, 'S4_5') ? '<p>1日の中での変化:<b>' + esc(C2.answerText(C2.QI.S4_5, a.S4_5)) + '</b></p>' : '');
+    var hyp = an.hyp.map(function (h) {
+      return '<div class="card" style="margin:8px 0"><div class="row" style="justify-content:space-between"><b>' + esc(h.n) + '</b><span class="tag">' + h.score + ' / ' + h.asked + '</span></div>' +
+        '<div class="track" style="margin:6px 0"><i style="width:' + Math.round(h.score / Math.max(h.asked, 1) * 100) + '%"></i></div>' +
+        (h.hit.length ? '<ul>' + h.hit.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p class="sub">当てはまる答えはありません</p>') +
+        (h.score ? '<p class="sub">次の一手:' + esc(h.next) + '</p>' : '') + '</div>';
+    }).join('');
+    return { an: an, sleep: sleep, worry: worry, od: od, hyp: hyp };
+  }
+  function renderResult2(data) {
+    var C2 = CORE2, a = data.a, b = body2(data, false), an = b.an;
+    var lines = C2.togetherText(data);
+    app.innerHTML = '<div class="row" style="justify-content:space-between"><h1>' + fmtDate(data.t) + ' 不安と眠り</h1><button id="home">戻る</button></div>' +
+      '<p class="sub">所要時間 ' + Math.round(data.dur / 60) + '分 ・ これは診断ではありません。</p>' + e3Block2(data) +
+      (an.notes.length ? '<div class="card alert soon"><h2>気をつけてほしいこと</h2><ul>' + an.notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div>' : '') +
+      '<div class="card"><h2>本人がいちばん困っていると選んだこと</h2>' + (C2.has(a, 'G1') ? '<p style="font-size:20px"><b>' + esc(C2.answerText(C2.QI.G1, a.G1, a)) + '</b></p>' : '<p class="sub">(出なかったか、答えていません)</p>') +
+      (C2.has(a, 'G2') ? '<p>毎日ぐっすり眠れたら:<b>' + esc(C2.answerText(C2.QI.G2, a.G2)) + '</b></p>' : '') +
+      (C2.has(a, 'G3') ? '<p>あったら助かるもの:<b>' + esc(C2.answerText(C2.QI.G3, a.G3)) + '</b></p>' : '') + '</div>' +
+      '<div class="card"><h2>5つの見立て</h2><p class="sub">当てはまる答えが多い順。複数に当てはまることもあります。</p>' + b.hyp + '</div>' +
+      '<div class="card"><h2>眠り</h2>' + b.sleep + '</div>' +
+      '<div class="card"><h2>起立性調節障害の身体症状</h2>' + b.od + '</div>' +
+      '<div class="card"><h2>心配と気持ち</h2>' + b.worry + '</div>' +
+      '<div class="card"><h2>一緒に読んだ文章</h2><ul class="lines">' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="card"><details><summary><b>すべての答え</b></summary>' + allAnswers2(data) + '</details></div>' +
+      '<div class="card"><h2>書き出す</h2><div class="row"><button class="pri" id="print">エール相談用シートを印刷・PDF</button><button id="chat">Claudeに貼る用のテキストをコピー</button></div></div>' +
+      '<section id="sheet"><h1>エール相談用シート(不安と眠り)</h1><p>回答日:' + fmtDate(data.t) + ' / 所要時間:' + Math.round(data.dur / 60) + '分</p>' +
+      '<p class="sub">中学1年の娘が、家庭で作った質問アプリに回答した結果です。診断ではなく、相談の材料としてお持ちしました。</p>' +
+      e3Block2(data) + (an.notes.length ? '<div class="card"><h2>気をつけてほしいこと</h2><ul>' + an.notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div>' : '') +
+      '<div class="card"><h2>見立て</h2>' + body2(data, true).hyp + '</div><div class="card"><h2>眠り</h2>' + b.sleep + '</div>' +
+      '<div class="card"><h2>起立性調節障害の身体症状</h2>' + body2(data, true).od + '</div><div class="card"><h2>心配と気持ち</h2>' + b.worry + '</div>' +
+      '<div class="card"><h2>全回答</h2>' + allAnswers2(data) + '</div></section>';
+    document.getElementById('home').onclick = renderHome;
+    document.getElementById('print').onclick = function () { window.print(); };
+    document.getElementById('chat').onclick = function () { navigator.clipboard.writeText(chatText2(data)); this.textContent = 'コピーしました'; };
+    var pale = document.getElementById('pale');
+    if (pale) pale.onchange = function () { data.pale = pale.checked ? 1 : 0; saveHist(data); renderResult2(data); };
     window.scrollTo(0, 0);
   }
 
